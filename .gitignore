@@ -1,0 +1,7 @@
+.glitchdotcom.json
+.node-gyp
+.env
+.config
+.bash_history
+node_modules
+dist

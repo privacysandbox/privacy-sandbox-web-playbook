@@ -1,0 +1,82 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FedCM IDP Demo</title>
+    <meta name="description" content="FedCM IDP Demo">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="origin-trial" content="{{ot_token}}">
+    <link rel="stylesheet" href="/bundle.css">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+    <script src="components-bundle.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <span slot="title">FedCM IDP Demo</span>
+    </mwc-top-app-bar-fixed>
+
+    <main class="content center">
+      <h2>
+        The RP wants to access your data
+      </h2>
+      <form id="form" action="/auth/account" method="post" class="center">
+        <div class="buttons center">
+          <mwc-list>
+            <mwc-list-item graphic="icon">
+              <slot>View and download all your Drive files</slot>
+              <mwc-icon slot="graphic">info</mwc-icon>
+            </mwc-list-item>
+<!--         TODO: only show conditionally, if calendar is in scope     -->
+            <mwc-list-item graphic="icon">
+              <slot>See and download any calendar using your Calendar</slot>
+              <mwc-icon slot="graphic">info</mwc-icon>
+            </mwc-list-item>
+          </mwc-list>
+          <div class="buttons">
+            <mwc-button id="reject">Reject</mwc-button>
+            <mwc-button raised id="accept">Accept</mwc-button>
+          </div>
+        </div>
+      </form>
+    </main>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+    <script type="module">
+      import { _fetch, registerCredential, unregisterCredential, toast } from '/client.js';
+      import { html, render } from 'https://unpkg.com/lit-html@1.0.0/lit-html.js?module';
+      
+      const accept = document.querySelector('#accept');
+      const reject = document.querySelector('#reject');
+
+      accept.addEventListener('click', async e => {
+        e.preventDefault();
+        const url = new URL(location.href);
+        const client_id = url.searchParams.get('client_id');
+        const nonce = url.searchParams.get('nonce');
+        const { token } = await _fetch('/auth/token', { client_id, nonce });
+        IdentityProvider.resolve(token);
+      });
+
+      reject.addEventListener('click', async e => {
+        IdentityProvider.close();
+      });
+    </script>
+  </body>
+</html>

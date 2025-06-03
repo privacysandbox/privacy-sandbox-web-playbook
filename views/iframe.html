@@ -1,0 +1,67 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FedCM IDP Demo</title>
+    <meta name="description" content="FedCM IDP Demo">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="origin-trial" content="{{ot_token}}">
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+    <script src="components-bundle.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <main class="content center">
+    </main>
+    <script type="module">
+      import { $, _fetch, getUserInfo } from '/client.js';
+      import { html, render } from 'https://unpkg.com/lit-html@1.0.0/lit-html.js?module';
+
+      const signIn = () => {
+        window.parent.postMessage('sign-in', '*');
+      }
+
+      getUserInfo().then(user_info => {
+        // Render personalized sign-in button
+        console.log(user_info);
+        const button = html`<div class="signin-button" @click="${signIn}"><div>
+          <img src="${user_info.picture}" class="avatar">
+        </div><div>
+          <span class="signin-as">Sign in as ${user_info.givenName}</span><br>
+          <span class="signin-email">${user_info.email}</span>
+        </div></div>`;
+        render(button, $('main'));
+      }).catch(() => {
+        // Render normal sign-in button
+        const openIdP = () => {
+          const url = new URL('https://fedcm-idp-demo.glitch.me');
+          url.searchParams.append('back', 'https://fedcm-rp-demo.glitch.me/button');
+          window.parent.location = url.toString();
+        }
+        const button = html`<mwc-button @click="${openIdP}" raised>Goto the IdP and Sign in</mwc-button>`;
+        render(button, $('main'));
+      });
+
+    </script>
+  </body>
+</html>

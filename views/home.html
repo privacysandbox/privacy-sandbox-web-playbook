@@ -1,0 +1,146 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FedCM IDP Demo</title>
+    <meta name="description" content="FedCM IDP Demo">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="origin-trial" content="{{ot_token}}">
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+    <script src="components-bundle.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <span slot="title">FedCM IDP Demo</span>
+    </mwc-top-app-bar-fixed>
+
+    <main class="content center">
+      <h2>
+        Welcome, {{username}}!
+      </h2>
+<!--       <p class="instructions">The session expires in 3 minutes!</p> -->
+      <p>These are the RPs that are currently relying on this account:</p>
+        [
+            {{#if approved_clients.length}}
+              {{#each approved_clients}}
+                {{#if @first}}
+                  {{this}}
+                {{else}}
+                  ,
+                  {{this}}
+                {{/if}}
+              {{/each}}
+            {{else}}
+
+            {{/if}}
+          ]
+      <form id="form" action='auth/account' method="post" class="center">
+        <div class="buttons center">
+          <mwc-select
+           label="Account status"
+           name="status"
+           outlined>
+            {{#each statuses}}
+            <mwc-list-item value="{{this.value}}"{{#isEqual ../status this.value}} selected{{/isEqual}}>{{this.string}}</mwc-list-item>
+            {{/each}}
+          </mwc-select>
+          {{#if demo_account}}
+          <p class="instructions">You can't edit personal information of <code>demo@example.com</code>.</p>
+          {{/if}}
+          <mwc-textfield
+            label="First Name"
+            class="buttons"
+            name="given_name"
+            pattern="[0-9a-zA-Z-_]{0,12}"
+            outlined
+            value="{{given_name}}"
+            {{#if demo_account}}disabled{{/if}}
+            required>
+          </mwc-textfield>
+          <mwc-textfield
+            label="Last Name"
+            pattern="[0-9a-zA-Z-_]{0,12}"
+            class="buttons"
+            name="family_name"
+            outlined
+            value="{{family_name}}"
+            {{#if demo_account}}disabled{{/if}}
+            required>
+          </mwc-textfield>
+        </div>
+        <div class="buttons center">
+          <mwc-textfield
+            type="url"
+            label="Profile photo URL"
+            class="buttons"
+            name="picture"
+            outlined
+            size="50"
+            value="{{picture}}"
+            {{#if demo_account}}disabled{{/if}}
+            required >
+          </mwc-textfield>
+          <img src="{{picture}}" class="picture">
+        </div>
+        <input type="submit" class="mdc-button mdc-button--raised" value="Update Personal Info" />
+      </form>
+      <mwc-button><a href="/auth/signout">Sign out</a></mwc-button>
+      <mwc-button><a href="{{backURL}}">Visit the RP to try FedCM</a></mwc-button>
+    </main>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+    <script type="module">
+      import { _fetch, registerCredential, unregisterCredential, toast } from '/client.js';
+      import { html, render } from 'https://unpkg.com/lit-html@1.0.0/lit-html.js?module';
+      
+      const _form = document.querySelector('#form');
+      
+      _form.addEventListener('submit', e => {
+        e.preventDefault();
+        const form = new FormData(e.target);
+        const cred = {};
+        form.forEach((v, k) => cred[k] = v);
+        _fetch(e.target.action, cred)
+        .then(user => {
+          toast('Your personal info is successfully updated.');
+          setTimeout(() => {
+              // Get the current URL's query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Extract the 'back' parameter
+            const backParam = urlParams.get('back');
+            
+            // Construct the redirect URL with the 'back' parameter
+            let redirectUrl = '/home' + (backParam && backParam !== 'null' && backParam !== 'undefined' ? 
+                                         `?back=${backParam}` : '' );
+            
+            console.log(redirectUrl)
+
+            location.href = redirectUrl;           
+          }, 2000);
+        })
+        .catch(e => toast(e));
+      });
+
+    </script>
+  </body>
+</html>

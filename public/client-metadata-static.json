@@ -1,0 +1,12 @@
+{
+  "privacy_policy_url": "https://fedcm-idp-demo.glitch.me/privacy_policy.html",
+  "terms_of_service_url": "https://fedcm-idp-demo.glitch.me/terms_of_service.html",
+  "brand_icon_url": "https://cdn.glitch.global/32bb3785-b985-4733-a2b1-2dfc919d2250/shrine.png?v=1721700610752",
+  "client_matches_top_frame_origin": true,
+  "icons": [
+      {
+        "url": "https://cdn.glitch.global/32bb3785-b985-4733-a2b1-2dfc919d2250/shrine.png?v=1721700610752",
+        "size": 40
+      }
+    ]
+}

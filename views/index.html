@@ -1,0 +1,100 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FedCM IDP Demo</title>
+    <meta name="description" content="FedCM IDP Demo" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="origin-trial" content="{{ot_token}}" />
+    <link rel="stylesheet" href="/bundle.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css"
+    />
+    <script src="components-bundle.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <span slot="title">FedCM IDP Demo</span>
+    </mwc-top-app-bar-fixed>
+    <main class="content center">
+      <h2>Sign-in</h2>
+      <form id="form" method="POST" action="/auth/username" class="center">
+        <div class="mdc-text-field mdc-text-field--filled">
+          <span class="mdc-text-field__ripple"></span>
+          <label class="mdc-floating-label" id="username-label">username</label>
+          <input
+            type="text"
+            class="mdc-text-field__input"
+            aria-labelledby="username-label"
+            name="username"
+            value="demo@example.com"
+          />
+          <span class="mdc-line-ripple"></span>
+        </div>
+        <p class="instructions">
+          Use a random ID to sign-in. Use account "multiple-accounts" to try
+          mulitple accounts dialog.
+        </p>
+        <div class="buttons center">
+          <input
+            type="submit"
+            class="mdc-button mdc-button--raised"
+            value="Continue"
+          />
+        </div>
+      </form>
+      <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+      <script type="module">
+        new mdc.textField.MDCTextField(
+          document.querySelector(".mdc-text-field")
+        );
+        import { _fetch, queryBack } from "/client.js";
+        const back = queryBack();
+        const form = document.querySelector("#form");
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const cred = {};
+          form.forEach((v, k) => (cred[k] = v));
+          _fetch(e.target.action, cred)
+            .then((user) => {
+              const urlParams = new URLSearchParams(window.location.search);
+              // Extract the 'back' parameter
+              const backParam = urlParams.get('back');
+
+              const url = new URL(`${location.origin}/reauth` 
+                                  + (backParam && backParam !== 'null' && backParam !== 'undefined' ? 
+                                     `?back=${backParam}` : ''));
+              location.href = url.toString();
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        });
+      </script>
+    </main>
+  </body>
+</html>

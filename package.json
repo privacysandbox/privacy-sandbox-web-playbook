@@ -8,7 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.20.0",
     "hbs": "^4.2.0",
     "lowdb": "^3.0.0",
     "@material/mwc-button": "^0.27.0",

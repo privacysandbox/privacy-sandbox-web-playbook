@@ -5,3 +5,9 @@
 .bash_history
 node_modules
 dist
+.config
+.data
+/dist
+libs
+.viminfo
+

@@ -10,4 +10,5 @@ dist
 /dist
 libs
 .viminfo
+.idea
 

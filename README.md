@@ -1,8 +1,8 @@
-# Privacy Sandbox Playbook
+# Privacy Sandbox Web playbook
 
 ---
 
-This repository, **Privacy Sandbox Playbook**, is a collection of **demos** designed to illustrate both foundational **web privacy concepts** and the **technical usage** of various **Privacy Sandbox APIs**.
+This repository, **Privacy Sandbox Web playbook**, is a collection of **demos** designed to illustrate both foundational **web privacy concepts** and the **technical usage** of various **Privacy Sandbox APIs**.
 
 The goal is to help developers understand not just **how to use these APIs**, but also the underlying web mechanisms and challenges they address. Some demos focus on explaining web fundamentals, such as:
 

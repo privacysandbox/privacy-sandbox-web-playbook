@@ -11,5 +11,6 @@ The goal is to help developers understand not just **how to use these APIs**, bu
 * Concepts like **partitioned storage** and how it enhances privacy.
 * Common **attack vectors** related to cookies.
 * The role and information conveyed by the **User-Agent string**.
+* Usage of **Shared Storage API**.
 
 Other demos in this playbook concentrate on showcasing the core interactions of the Privacy Sandbox APIs. We often simplify additional logic in these examples to keep the primary focus on the specific Privacy Sandbox features being demonstrated.

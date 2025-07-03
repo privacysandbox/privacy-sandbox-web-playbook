@@ -8,7 +8,6 @@ dist
 .config
 .data
 /dist
-libs
 .viminfo
 .idea
 

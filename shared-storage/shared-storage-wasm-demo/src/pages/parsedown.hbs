@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage WebAssembly Demo: parse markdown to plain text</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/inner-style.css"/>
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+
+    <h2>
+      Shared Storage WebAssembly Demo: parse markdown to plain text
+    </h2>
+    <fencedframe id="inner"></fencedframe>
+    
+    <script src="/utils"></script>
+    
+    <script id="main">     
+      const fencedFrame = document.getElementById('inner');
+      window.sharedStorage.worklet.addModule('/parsedown-module.js') 
+        .then(() => {
+          fetchJsString("/get-parsedown-js-string")
+            .then((jsString) => { 
+              fetchWasmBytes("/get-parsedown-wasm-bytes") 
+                .then((wasmBytes) => { 
+                  console.log(wasmBytes);
+                  return window.sharedStorage.selectURL( 
+                    'parsedown', 
+                    generateURLs('/parsedown-inner', 8),
+                    { 
+                      data: { 
+                        'markdown': '# example ## hello world', 
+                        'jsString': jsString, 
+                        'wasmBytes': wasmBytes
+                      }, 
+                      resolveToConfig: true 
+                    } 
+                  ); 
+                }) 
+                .then((frameConfig) => { 
+                  fencedFrame.config = frameConfig;
+                }) 
+                .catch((error) => { 
+                  console.error("Error in fenced frame creation:", error); 
+                }); 
+            }) 
+            .catch((error) => { 
+              console.error("Error fetching Wasm bytes:", error); 
+            }); 
+        })
+        .catch((error) => { 
+          console.error("Error fetching JS string:", error); 
+        }); 
+    </script>
+    
+    <h3>
+      Client Shared Storage Module:
+      <br id="breakForModule"><code-box>{{scriptText}}</code-box>
+    </h3>
+    
+    <h3>
+      Client Main JavaScript:
+      <br id="breakForCode"><script>displayScriptInCodeBoxAfterElement('main', 'breakForCode');</script>
+    </h3>
+    <script src="/dark-mode"></script>
+  </body>
+</html>

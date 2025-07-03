@@ -10,4 +10,4 @@ dist
 /dist
 .viminfo
 .idea
-
+.DS_Store

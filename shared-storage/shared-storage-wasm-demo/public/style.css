@@ -1,0 +1,175 @@
+/* Theme-Agnostic Styles */
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+img {
+  height: auto;
+  max-width: 25%;
+  padding-left: 20px;
+  margin-left: 0;
+}
+
+iframe {
+  height: 1000px;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+}
+
+fieldset {
+  margin-bottom: 10px; 
+}
+
+.image-container {
+  display: flex;
+  align-items: center;  /* for vertical centering */
+}
+
+/* Default Light Theme Styles */
+body {
+  margin: 1rem;
+  font-family: sans-serif;
+  line-height: 1.5;
+  background-color: white;
+  color: black;
+  padding-left: 10px;
+}
+
+#customHeader {
+  font-family: "Courier New", Courier, monospace;  /* Prioritize Courier New, fallback to system monospace */
+  font-weight: bold;
+  font-size: 18px;
+  background-color: lightblue; 
+  color: blue;
+  white-space: pre;  /* Preserve whitespace formatting */
+  width: 775px;
+  height: 80px;
+  border: 1px solid #cccccc;
+  padding: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;  /* Add spacing between boxes */
+  border-radius: 3px;  /* Slightly rounded corners */
+  border-color: #f0f0ff;
+  position: relative;
+  display: inline-block;
+  align-items: center;  /* for vertical centering */
+}
+
+.custom-divider {
+  height: 1px;    
+  width: 90%;
+  background-color: #f0f0f0;  
+  border-color: #f0f0f0; 
+  margin: 10px auto;  /* Center the divider*/
+}
+
+h1 { 
+  color: blue; 
+}
+
+h2 {
+  color: blue; 
+}
+
+h3 {
+  color: black; 
+}
+
+a {
+  color: blue; 
+}
+
+legend {
+  color: blue;
+}
+
+button {
+  font-weight: bold;
+  font-size: 18px;
+  color: blue;
+  border: 1px solid #cccccc;
+  background-color: lightblue;
+  padding: 10px;
+  border-radius: 3px; 
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* Dark Theme Styles */
+body.dark-mode {
+  margin: 1rem;
+  font-family: sans-serif;
+  line-height: 1.5;
+  background-color: black;
+  color: white;
+  padding-left: 10px;
+}
+
+body.dark-mode #customHeader {
+  font-family: "Courier New", Courier, monospace;  /* Prioritize Courier New, fallback to system monospace */
+  font-weight: bold;
+  font-size: 18px;
+  background-color: lightblue; 
+  color: blue;
+  white-space: pre;  /* Preserve whitespace formatting */
+  width: 775px;
+  height: 80px;
+  border: 1px solid #cccccc;
+  padding: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;  /* Add spacing between boxes */
+  border-radius: 3px;  /* Slightly rounded corners */
+  border-color: #f0f0ff;
+  position: relative;
+  display: inline-block;
+  align-items: center;  /* for vertical centering */
+}
+
+body.dark-mode .custom-divider {
+  height: 1px;    
+  width: 90%;
+  background-color: #444444;  
+  border-color: #444444;
+  margin: 10px auto;  /* Center the divider*/
+}
+
+body.dark-mode h1 { 
+  color: lightblue; 
+}
+
+body.dark-mode h2 {
+  color: lightblue; 
+}
+
+body.dark-mode h3 {
+  color: white; 
+}
+
+body.dark-mode a {
+  color: lightblue; 
+}
+
+body.dark-mode legend {
+  color: lightblue;
+}
+
+body.dark-mode button {
+  font-weight: bold;
+  font-size: 18px;
+  color: blue;
+  border: 1px solid #cccccc;
+  background-color: lightblue;
+  padding: 10px;
+  border-radius: 3px; 
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

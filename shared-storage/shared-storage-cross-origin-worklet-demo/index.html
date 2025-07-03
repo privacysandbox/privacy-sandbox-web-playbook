@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <h1>Shared Storage Cross-Origin Worklet Demo</h1>
+    
+    <b>How to run the demo</b>
+    <br>
+    Start Chrome (M125+) with flags:
+    <input type="text" value="--enable-features=SharedStorageAPI,FencedFrames,PrivacySandboxAdsAPIsOverride,FencedFramesAPIChanges,FencedFramesDefaultMode,PrivacySandboxSettings4,OverridePrivacySandboxSettingsLocalTesting,SharedStorageAPIM125 --disable-features=EnforcePrivacySandboxAttestations" id="flagsInput">
+    <button onclick="copyText()">Copy text</button>
+    <br>
+    <button onclick="demo()">start</button>
+    <br>
+    <button onclick="demoCorsError()">Demo Missing Cors Response Error</button>
+    <br>
+    <button onclick="demoSSError()">Demo Missing Shared Storage Response Error</button>
+    <br>
+    <button onclick="fetchCorsError()">Demo Fetch</button>
+    <br>
+    <br>
+    <b>This page will start a cross-origin worklet, execute a selectURL() within it, and display the returned URL in a fenced frame.</b>
+    <br>
+    <br>
+    <script>
+      function copyText() {
+        var copyText = document.getElementById("flagsInput");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(copyText.value);
+      }
+      
+      async function demo() {
+        const worklet = await sharedStorage.createWorklet("https://cr.kungfoo.net/yao/shared_storage/module-allow-demo-origin.php", {dataOrigin: 'script-origin'});
+        
+        const resultConfig = await worklet.selectURL(
+            "load-first-url",
+            [{
+                url: "https://cr.kungfoo.net/yao/shared_storage/demo-support-fenced-frame.php"
+            }], {
+                resolveToConfig: true,
+                keepAlive: true
+            });
+        
+        const fencedFrame = document.createElement('fencedframe');
+        const config = new FencedFrameConfig('opaque-ads');
+        fencedFrame.config = resultConfig;
+        document.body.append(fencedFrame);
+      }
+
+      async function fetchCorsError() {
+        const url = "https://cr.kungfoo.net/yao/shared_storage/module.js";
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          const json = await response.json();
+          console.log(json);
+        } catch (error) {
+          console.error(error.message);
+        }
+      }
+      
+      async function demoCorsError() {
+        const worklet = await sharedStorage.createWorklet("https://cr.kungfoo.net/yao/shared_storage/module.js", {dataOrigin: 'script-origin'});
+        
+        const resultConfig = await worklet.selectURL(
+            "load-first-url",
+            [{
+                url: "https://cr.kungfoo.net/yao/shared_storage/demo-support-fenced-frame.php"
+            }], {
+                resolveToConfig: true,
+                keepAlive: true
+            });
+        
+        const fencedFrame = document.createElement('fencedframe');
+        const config = new FencedFrameConfig('opaque-ads');
+        fencedFrame.config = resultConfig;
+        document.body.append(fencedFrame);
+      }
+      
+      async function demoSSError() {
+        const worklet = await sharedStorage.createWorklet("https://cr.kungfoo.net/yao/shared_storage/demo-missing-shared-storage-response-header.php", {dataOrigin: 'script-origin'});
+        
+        const resultConfig = await worklet.selectURL(
+            "load-first-url",
+            [{
+                url: "https://cr.kungfoo.net/yao/shared_storage/demo-support-fenced-frame.php"
+            }], {
+                resolveToConfig: true,
+                keepAlive: true
+            });
+        
+        const fencedFrame = document.createElement('fencedframe');
+        const config = new FencedFrameConfig('opaque-ads');
+        fencedFrame.config = resultConfig;
+        document.body.append(fencedFrame);
+      }
+      
+          
+      // demo();
+    </script>
+  </body>
+</html>

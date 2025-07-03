@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Header Demo: from img tag</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css"/>
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+
+    <h2>
+      Writing to shared storage from an &lt;img&gt; tag
+    </h2>
+    <h3>
+      Header sent: 
+      <br><code-box>Shared-Storage-Write: {{rawSharedStorageHeaderValue}}</code-box>
+    </h3>
+    <img id="main" src="/imagetag?write={{encodedSharedStorageHeaderValue}}" alt="Fluffy blonde cat sitting on a desk and browsing internet using Google" sharedstoragewritable/>
+    
+    <h3>
+      Client HTML:
+      <br id="breakForCode"><script>displayHTMLTagInCodeBoxAfterElement('main', 'breakForCode');</script>
+    </h3>
+    <script src="/dark-mode"></script>
+  </body>
+</html>

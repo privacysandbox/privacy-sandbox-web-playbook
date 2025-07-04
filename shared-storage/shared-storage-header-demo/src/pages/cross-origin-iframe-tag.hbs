@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Header Demo: cross-origin from iframe tag</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/inner-style.css"/>
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+
+    <h2>
+      Writing to shared storage from a cross-origin &lt;iframe&gt; tag
+    </h2>
+    
+    <h3>
+      Header sent: 
+      <br><code-box>Shared-Storage-Write: {{rawSharedStorageHeaderValue}}</code-box>
+    </h3>
+    <iframe id="main" src="https://shared-storage-header-demo-alt-origin.glitch.me/iframetag?write={{encodedSharedStorageHeaderValue}}&theme={{theme}}" sharedstoragewritable></iframe>
+    
+    <h3>
+      Client HTML:
+      <br id="breakForCode"><script>displayHTMLTagInCodeBoxAfterElement('main', 'breakForCode');</script>
+    </h3>
+    <script src="/dark-mode"></script>
+  </body>
+</html>

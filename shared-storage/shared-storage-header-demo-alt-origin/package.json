@@ -1,0 +1,38 @@
+{
+  "name": "shared-storage-header-demo-alt-origin",
+  "version": "0.1.0",
+  "description": "Cross-origin serving for a simple demo of writing to Shared Storage from HTTP response headers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "fastify": "^4.21.0",
+    "handlebars": "^4.7.8",
+    "@fastify/view": "^8.0.0",
+    "@fastify/static": "^6.10.2",
+    "got": "^14.2.0",
+    "url": "^0.11.3",
+    "fs": "^0.0.2"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/shared-storage-header-demo-alt-origin"
+  },
+  "license": "MIT",
+  "keywords": [
+    "shared",
+    "storage",
+    "response",
+    "header",
+    "HTTP",
+    "demo",
+    "network",
+    "request",
+    "example",
+    "glitch"
+  ],
+  "type": "module"
+}

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Header Demo</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+    <h1>Shared Storage HTTP Response Header Demo</h1>
+    
+    <h3>
+      <div id="toc">
+      Contents
+      <ul> 
+      </ul>
+      </div>
+    </h3>
+    <button id="darkModeButton">toggle dark mode</button>
+    <script src="/dark-mode"></script>
+    <br>
+    <hr class="custom-divider">
+    <p>
+      <h2 id="Overview">Overview</h2>
+    </p>
+  
+    <p>
+      <h3>
+        This is a demo of the new <a href="https://github.com/WICG/shared-storage/blob/main/README.md">Shared Storage API</a>, as used from HTTP response headers. 
+      </h3>
+    </p>
+
+   <p>
+     <h3>
+       See the <a href="https://github.com/WICG/shared-storage/blob/main/README.md#from-response-headers">explainer</a> and its <a href="https://github.com/WICG/shared-storage/blob/main/README.md#writing-to-shared-storage-via-response-headers">response header example</a> for information on using Shared Storage via response headers. 
+    </h3>
+  </p>
+    <hr class="custom-divider">
+    <p>
+      <h2 id="setup">Demo Setup Instructions</h2>
+    </p>
+    
+    
+    <p>
+      <h3>
+        Writing to Shared Storage from response headers is enabled by default in Chrome versions 124.0.6339.0+.
+      </h3>
+    </p>
+  
+    <p>
+      <h3>
+        You can check your Chrome version number at <br><code-box>chrome://version</code-box> 
+      </h3> 
+    </p>
+  
+    <p>
+      <h3>
+        If you are running an eligible version of Chrome on Desktop, you should be able to see the key-value pairs written into this origin's shared storage as follows:
+        
+        <ul>
+          <li>Override Privacy Sandbox enrollment for this site:</li>
+            <ul>
+              <li>
+                Open a new tab and navigate to: 
+                <br><code-box>chrome://flags/#privacy-sandbox-enrollment-overrides</code-box>
+              </li>
+              <li>
+                Enter 
+                <br><code-box>https://shared-storage-header-demo.glitch.me,https://shared-storage-header-demo-alt-origin.glitch.me</code-box>
+                <br>in the text input box below "Privacy Sandbox Enrollment Overrides"
+              </li>
+              <li>To the right, toggle the value for the flag to "Enabled"</li>
+              <li>Click "Relaunch" in the bottom right corner<br>
+            <img src="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/flag-screenshot.png?v=1710469435800" alt="Screenshot of chrome://flags/#privacy-sandbox-enrollment-overrides"/></li>
+          </ul>
+          <hr class="custom-divider">
+          <li>To see the results of same-origin requests, open the Shared Storage view for "https://shared-storage-header-demo.glitch.me" in DevTools:</li>
+            <ul>
+              <li>Go back to your tab with <a href="https://shared-storage-header-demo.glitch.me">https://shared-storage-header-demo.glitch.me</a> (this page)</li>
+              <li>Open DevTools by selecting the three dot menu &gt; More Tools &gt; Developer Tools</li>
+              <li>Click &gt;&gt; in the Developer Tools menu bar and select "Application"</li>
+              <li>Click the triangle at the left of Shared Storage on the side panel to expand</li>
+              <li>
+                Select the view for the origin "https://shared-storage-header-demo.glitch.me"<br>
+                <img src="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/devtools-screenshot.png?v=1710208822298" alt="Screenshot of Shared Storage origin view in DevTools"/>
+              </li>
+          </ul>
+          <hr class="custom-divider">
+          <li>To see the results of cross-origin requests, open the Shared Storage view for "https://shared-storage-header-demo-alt-origin.glitch.me" in DevTools:</li>
+            <ul>
+              <li>Follow the same instructions as above, but select the view for the origin "https://shared-storage-header-demo-alt-origin.glitch.me"</li>
+              <li>
+                Note that we have added a 
+                <br><code-box>style="display: none;"</code-box>
+                <br>cross-origin iframe loading a document from "https://shared-storage-header-demo-alt-origin.glitch.me" at the bottom of this page, as the origins listed for Shared Storage in DevTools for a page are exactly the origins of that page's documents
+              </li>
+            </ul>
+            <hr class="custom-divider">
+            <li>Use the refresh, clear, and delete buttons in the DevTools Shared Storage origin view as needed:</li>
+            <ul>
+              <li>
+                The refresh button is the circular arrow in the top left<br>
+                <img src="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/closer-screenshot-refresh.png?v=1710209553896" alt="Closeup screenshot of Shared Storage origin view in DevTools with red arrow pointing to refresh button"/>
+              </li>
+              <li>The refresh button will manually reload the demo origin's Shared Storage entries</li>
+              <li>You should refresh after each button click in the "Network Request Types" below</li>
+              <li>
+                The clear button is the circle with a slash through it in the top right<br>
+                <img src="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/closer-screenshot-clear.png?v=1710209565151" alt="Closeup screenshot of Shared Storage origin view in DevTools with red arrow pointing to clear button"/>
+              </li>
+              <li>The clear button will manually purge all entries from the demo origin's shared storage and refresh the view</li>
+              <li>
+                The delete button is the X in the top right<br>
+                <img src="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/closer-screenshot-delete.png?v=1710209569250" alt="Closeup screenshot of Shared Storage origin view in DevTools with red arrow pointing to delete button"/>
+              </li>
+              <li>The delete button will manually delete only the selected entry from shared storage</li>
+          </ul>
+         </ul>
+      </h3>
+    </p>
+  <hr class="custom-divider">
+  <p>
+    <h2 id="request">Send Network Request That Receives Shared Storage Response Header</h2>
+  </p>
+  
+    <p>
+      <h3>
+        For each of the <a href="#requestTypes">request type buttons below</a>, a document will load in the <a href="#displayIframe">iframe below</a>. When the request is made, the browser will send a 
+        <br><code-box>Sec-Shared-Storage-Writable: ?1</code-box>      
+        <br>HTTP request header, triggered by either a
+        <br><code-box>sharedStorageWritable</code-box>        
+        <br>IDL attribute or a  
+        <br><code-box>sharedstoragewritable</code-box>        
+        <br>content attribute.
+        The server will then send a 
+        <br><code-box>Shared-Storage-Write</code-box> 
+        <br>HTTP response header (with some value) along with the network response.
+      </h3>
+    </p>
+
+    <p> 
+      <h3>
+        You can use the <a href="#originChoices">origin choice toggle</a> to switch between same-origin and cross-origin network requests.
+      </h3>
+    </p>
+
+    <p> 
+     <h3>
+        You can also select a Shared Storage method, or one of the preset combinations of Shared Storage methods, from the <a href="#methodOptions">method radio options below</a>, to prepopulate the example "Shared-Storage-Write" header value to be used. Alternatively, if you prefer to enter your own full custom header value, you may do so in the <a href="#customHeader">text input box below</a>. 
+      </h3>
+    </p>
+
+    <p>
+      <h3>
+        The response header actually sent by the server will be shown in the <a href="#displayIframe">iframe below</a> after you click your chosen <a href="#requestTypes">network request type button</a>. 
+     </h3>
+   </p>
+
+    <p> 
+    <h3>
+      <fieldset id="requestTypes">
+        <legend>Network Request Type</legend>
+        <button data-doc="/img-fetch-outer">fetch()</button>
+        <button data-doc="/img-tag-outer">&lt;img&gt; tag</button>
+        <button data-doc="/img-script-outer">"img" via script</button>
+        <button data-doc="/iframe-tag-outer">&lt;iframe&gt; tag</button>
+        <button data-doc="/iframe-script-outer">"iframe" via script</button>
+      </fieldset>
+    </h3>
+    </p>
+
+    <p>
+     <h3>
+       <fieldset id="originChoices">
+         <legend>Origin Choice</legend>
+         <label><input type="radio" name="origin-choice" value="same-origin" checked> same-origin</label>
+         <br><label><input type="radio" name="origin-choice" value="cross-origin"> cross-origin</label>
+       </fieldset>
+     </h3>
+    </p>
+
+    <p>
+     <h3>
+       <fieldset id="methodOptions">
+        <legend> Shared Storage Method, Preset Combination of Methods, Random Header Value, or Custom Header Value</legend>
+          <label><input type="radio" name="method" value="set" checked> set</label>
+          <br><label><input type="radio" name="method" value="set-ignore-if-present"> set with {ignoreIfPresent: true}</label>
+          <br><label><input type="radio" name="method" value="append"> append</label>
+          <br><label><input type="radio" name="method" value="delete"> delete</label>
+          <br><label><input type="radio" name="method" value="clear"> clear</label> 
+         
+          <hr class="custom-divider">
+          
+          <br><label><input type="radio" name="method" value="set-set-set"> set, set, set</label> 
+          <br><label><input type="radio" name="method" value="set-append"> set, append</label> 
+          <br><label><input type="radio" name="method" value="delete-set-set-append"> delete, set, set, append</label> 
+          <br><label><input type="radio" name="method" value="clear-set"> clear, set</label>     
+         
+          <hr class="custom-divider">
+          <br><label><input type="radio" name="method" value="random"> use randomly generated header value <button data-doc="/default-frame" id="updateRandom">generate new</button>
+            <ul>
+              <li>Shared-Storage-Write: <code-box id="randomHeader">{{rawRandomSharedStorageHeaderValueExample}}</code-box> </li>
+            </ul>
+         </label> 
+          
+          <hr class="custom-divider">
+          <br><label><input type="radio" name="method" value="custom"> or enter your own custom header value
+          <ul>
+            <li>
+              Your input:
+              <br>Shared-Storage-Write: <input type="text" id="customHeader" disabled> 
+            </li>    
+            <li>For more information on writing Shared Storage response headers, see the <a href="https://github.com/WICG/shared-storage/blob/main/README.md#from-response-headers">explainer</a>, which also includes <a href="https://github.com/WICG/shared-storage/blob/main/README.md#writing-to-shared-storage-via-response-headers">another example</a></li>
+          </ul>         
+          </label> 
+      </fieldset>
+    </h3>
+    </p>
+
+   <p>
+     <iframe id="displayIframe"></iframe> 
+   </p>
+
+   <p>
+     <iframe src="https://shared-storage-header-demo-alt-origin.glitch.me/blank" style="display: none;"></iframe> 
+   </p>
+
+   <script>
+     const buttons = document.querySelectorAll('button');
+     const iframe = document.getElementById('displayIframe');
+     iframe.src = (localStorage.getItem('theme') === 'dark') ? "/default-frame?theme=dark" : "/default-frame";
+     const updateRandomButton = document.getElementById('updateRandom');
+     const randomHeaderElement = document.getElementById('randomHeader');
+     updateRandomButton.addEventListener('click', () => {
+       fetch('/get-new-random-header-value') 
+         .then(response => response.json())
+         .then(params => {
+           randomHeaderElement.textContent = params.rawRandomSharedStorageHeaderValueExample;
+       });
+     });
+     const methodInputs = document.querySelectorAll('input[name="method"]');
+     const customHeaderInput = document.getElementById('customHeader');
+     methodInputs.forEach(input => {
+       input.addEventListener('change', () => {
+         customHeaderInput.disabled = input.value !== 'custom';
+       });
+     });
+     buttons.forEach(button => {
+       button.addEventListener('click', (event) => {
+         if (!event.target.dataset.doc) {
+           iframe.src = (localStorage.getItem('theme') === 'dark') ? "/default-frame?theme=dark" : "/default-frame";
+           return;
+         }
+         const selectedMethod = document.querySelector('input[name="method"]:checked').value;
+         let queryString = `?method=${selectedMethod}`;
+         if (localStorage.getItem('theme') === 'dark') {
+           queryString += '&theme=dark';
+         }
+         const selectedOriginChoice = document.querySelector('input[name="origin-choice"]:checked').value;
+         if (selectedOriginChoice === 'cross-origin') {
+           queryString += `&cross=true`;
+         }
+         if (selectedMethod === 'custom') {
+           const customHeaderValue = customHeaderInput.value;
+           if (customHeaderValue) {
+             queryString += `&custom=${encodeURIComponent(customHeaderValue)}`;
+           } else {
+             alert('Please enter a Shared-Storage-Write header value.');
+                
+             // Stop iframe update
+             return; 
+           }   
+         }          
+         iframe.src = `${event.target.dataset.doc}${queryString}`; 
+      });
+    });
+        
+    // Table of Contents
+    const h2Elements = document.querySelectorAll('h2');
+    const tocList = document.querySelector('#toc ul');
+    h2Elements.forEach(h2 => {
+      const listItem = document.createElement('li');
+      const anchor = document.createElement('a');
+      anchor.href = `#${h2.id}`;
+      anchor.textContent = h2.textContent;
+      listItem.appendChild(anchor);
+      tocList.appendChild(listItem);
+    });
+  </script>
+  </body>
+</html>

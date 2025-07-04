@@ -1,0 +1,36 @@
+{
+  "name": "shared-storage-wasm-demo",
+  "version": "0.1.0",
+  "description": "A simple demo of using WASM in Shared Storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "fastify": "^4.21.0",
+    "handlebars": "^4.7.8",
+    "@fastify/view": "^8.0.0",
+    "@fastify/static": "^6.10.2",
+    "got": "^14.2.0",
+    "url": "^0.11.3",
+    "fs": "^0.0.2",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/shared-storage-wasm-demo"
+  },
+  "license": "MIT",
+  "keywords": [
+    "shared",
+    "storage",
+    "wasm",
+    "webassembly",
+    "demo",
+    "example",
+    "glitch"
+  ],
+  "type": "module"
+}

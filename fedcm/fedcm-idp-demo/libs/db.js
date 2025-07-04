@@ -1,19 +1,20 @@
 let db;
 (async () => {
-  const { LowSync, JSONFileSync } = await import('lowdb');
-  const fs = require('fs');
+  const { LowSync, JSONFileSync } = await import("lowdb");
+  const fs = require("fs");
 
-  if (!fs.existsSync('./.data')) {
-    fs.mkdirSync('./.data');
+  if (!fs.existsSync("./.data")) {
+    fs.mkdirSync("./.data");
   }
 
-  db = new LowSync(new JSONFileSync('.data/db.json'));
+  db = new LowSync(new JSONFileSync(".data/db.json"));
 
   db.read();
-   if (!db.data) {
+  if (!db.data) {
     db.data = { users: [] };
     db.write();
-   }
+  }
+
   if (!db.data.users) {
     db.data.users = [];
     db.write();
@@ -22,13 +23,13 @@ let db;
 
 const getUser = (username) => {
   db.read();
-  return db.data.users.find(user => user.username === username);
-}
+  return db.data.users.find((user) => user.username === username);
+};
 
 const getUserById = (id) => {
   db.read();
-  return db.data.users.find(user => user.id === id);
-}
+  return db.data.users.find((user) => user.id === id);
+};
 
 const addUser = (user) => {
   db.read();
@@ -39,7 +40,7 @@ const addUser = (user) => {
     db.data.users.push(user);
   }
   db.write();
-}
+};
 
 const updateCredentials = (username, newCreds) => {
   const user = getUser(username);
@@ -48,13 +49,19 @@ const updateCredentials = (username, newCreds) => {
     db.write();
     return true;
   }
-  return false
-}
+  return false;
+};
 
 const resetUsers = () => {
   db.read();
   db.data.users = [];
   db.write();
-}
+};
 
-module.exports = { getUser, getUserById, addUser, updateCredentials, resetUsers };
+module.exports = {
+  getUser,
+  getUserById,
+  addUser,
+  updateCredentials,
+  resetUsers,
+};

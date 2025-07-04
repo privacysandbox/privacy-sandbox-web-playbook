@@ -10,6 +10,10 @@ let db;
   db = new LowSync(new JSONFileSync('.data/db.json'));
 
   db.read();
+   if (!db.data) {
+    db.data = { users: [] };
+    db.write();
+   }
   if (!db.data.users) {
     db.data.users = [];
     db.write();

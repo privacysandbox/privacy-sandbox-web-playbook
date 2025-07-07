@@ -1,0 +1,60 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Secure Payment Confirmation Shop</title>
+    <meta name="description" content="Secure Payment Confirmation Shop">
+    <link id="favicon" rel="icon" href="https://cdn.glitch.me/94838ffe-241b-4a67-a9e0-290bfe34c351%2Fbank.png?v=1639111444422" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+    <script src="components-bundle.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <span slot="title">FedCM RP Demo</span>
+    </mwc-top-app-bar-fixed>
+    <main class="content">
+      <h2 class="center">
+        Welcome {{name}} to FedCM RP Demo!
+      </h2>
+      <div id="profile">
+        <img src="{{picture}}" class="picture"><br/>
+        {{username}}
+      </div>
+      <mwc-button id="sign-out" raised>Sign-out</mwc-button>
+      <mwc-button id="disconnbect">Disconnect</mwc-button>
+    </main>
+    <script type="module">
+      import { $, toast, loading, _fetch } from './client.js';
+      import { disconnect } from 'https://fedcm-idp-demo.glitch.me/fedcm.js';
+      $('#sign-out').addEventListener(e => {
+        navigator.credentials.preventSilentAccess();
+        location.href = '/signout';
+      })
+      $('#disconnect').addEventListener(async e => {
+        await disconnect();
+      })
+    </script>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+  </body>
+</html>

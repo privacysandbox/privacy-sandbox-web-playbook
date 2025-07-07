@@ -1,0 +1,144 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FedCM RP Demo</title>
+    <meta name="description" content="FedCM RP Demo">
+    <link id="favicon" rel="icon" href="https://cdn.glitch.me/94838ffe-241b-4a67-a9e0-290bfe34c351%2Fbank.png?v=1639111444422" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+    <script src="components-bundle.js" type="module"></script>
+    <meta name="nonce" content="{{nonce}}">
+    <meta name="fedcm_demo_client_id" content="{{client_id}}">
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <span slot="title">FedCM RP Demo</span>
+      <mwc-icon-button id="code" icon="code" slot="actionItems"></mwc-icon-button>
+    </mwc-top-app-bar-fixed>
+    <mwc-linear-progress id="progress"></mwc-linear-progress>
+    <main class="content">
+      <h2 class="center">
+        Welcome to FedCM RP Demo!
+      </h2>
+      <p id="unsupported" class="warning hidden">
+        Your browser does not support FedCM.
+      </p>
+      <div id="profile" class="center"></div>
+      <div id="login" class="center">
+        <p class="instructions">
+          If you don't see a sign-in dialog on top right corner, you need to sign-in on the IdP first by pressing the button below.
+        </p>
+        <mwc-button id="idp">Goto the IdP and Sign in</mwc-button>
+        <p class="instructions">
+          Use account ID of "<code>multiple-accounts</code>" to try mulitple accounts dialog.
+        </p>
+      </div>
+    </main>
+    <script type="module">
+      import { $, toast, loading, _fetch } from './client.js';
+      import { IdentityProvider } from 'https://fedcm-idp-demo.glitch.me/fedcm.js';
+      import { html, render } from 'https://unpkg.com/lit-html@2.2.0/lit-html.js?module';
+
+      $('#code').addEventListener('click', e => {
+        location.href = 'https://glitch.com/edit/#!/fedcm-rp-demo';
+      });
+      
+      const idp = new IdentityProvider({
+        configURL: 'https://fedcm-idp-demo.glitch.me/fedcm.json',
+        clientId: 'https://fedcm-rp-demo.glitch.me'
+      });
+
+      const signIn = async () => {
+        try {
+          const token = await idp.signIn();
+          const user = await _fetch('/verify', { token });
+          render(html`
+          <p>You are signed in!</p>
+          <img src="${user.picture}" class="picture">
+          <p>${user.name} (${user.username})</p>
+          <mwc-button @click="${signout(user.user_id)}" raised>Sign-out</mwc-button>
+          <mwc-button @click="${disconnectFromIdP(user.user_id)}">Disconnect</mwc-button>
+          <p class="instructions">
+          Press <strong>sign-out</strong> to sign out on this RP. This will call <code>navigator.credentials.preventSilentAccess()</code>, and prevent auto-reauthentication with this account when the user visits the RP again. Next time the user visits the RP, they'll be treated as a returning user with this account. Learn more in the
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-auto-reauthn#prevent-silent-access" target="_blank">developer guide</a>.
+          </p>
+          <p class="instructions">
+          Press <strong>disconnect</strong> to disconnect from the IdP. The Disconnect API allows the user to disconnect the IdP account 
+          from the RP on the browser as well as on the IdP server. Next time the user visits the RP they'll be treated as a new user, and 
+          the <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-126-updates#fields-api" target="_blank">disclosure 
+          UI</a> will be shown. Learn more about the Disconnect API 
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-122-updates#disconnect_api" 
+          target="_blank">here</a>.
+          </p>
+          <p class="instructions">
+          Both of the methods <code>signOut()</code> and <code>disconnect()<code> are defined in the IdP's <a href="https://fedcm-idp-demo.glitch.me/fedcm.js" target="_blank">config file</a>. The methods can also be implemented by the RP.
+          </p>
+          `, $('#profile'));
+          $('#login').classList.add('hidden');
+        } catch (e) {
+          console.error(e);
+          toast(e.message);
+        }
+      }
+      const signout = (account_id) => async () => {
+        try {
+          loading.start();
+          toast('You are signed out. Redirecting in 3.0 sec.');
+          setTimeout(() => {
+            idp.signOut();
+            location.href = '/signout';
+          }, 3000);
+        } catch (e) {
+          loading.stop();
+          console.error(e);
+          toast(e.message);
+        }
+      };
+      
+      const disconnectFromIdP = (account_id) => async () => {
+        try {
+          await idp.disconnect(account_id);
+          toast('You are disconnected and signed out. Redirecting in 3.0 sec.');
+          setTimeout(() => {
+            location.href = '/signout';
+          }, 3000);
+        } catch (e) {
+          console.log(e);
+          toast('Account disconnection failed.');
+        }
+      };
+
+      $('#idp').addEventListener('click', e => {
+        idp.redirect();
+      })
+
+      if ('IdentityCredential' in window) {
+        await signIn();
+      } else {
+        $('#unsupported').classList.remove('hidden');
+      }
+    </script>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+  </body>
+</html>

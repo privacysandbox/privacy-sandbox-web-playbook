@@ -1,42 +1,90 @@
-# Hello Node!
+# FedCM Relying Party (RP) Demo
 
-This project includes a Node.js server script and a web page that connects to it. The front-end page presents a form the visitor can use to submit a color name, sending the submitted value to the back-end API running on the server. The server returns info to the page that allows it to update the display with the chosen color. 🎨
+This project is a demonstration of a **Relying Party (RP)** implementing the [Federated Credential Management (FedCM) API](https://developer.chrome.com/docs/privacy-sandbox/fedcm/).
 
-[Node.js](https://nodejs.org/en/about/) is a popular runtime that lets you run server-side JavaScript. This project uses the [Fastify](https://www.fastify.io/) framework and explores basic templating with [Handlebars](https://handlebarsjs.com/).
+It is designed to work alongside a FedCM-compatible [Identity Provider (IdP)](https://github.com/privacysandbox/privacy-sandbox-web-playbook/tree/main/fedcm/fedcm-idp-demo) to showcase how a user can sign in to a website (the RP) using their existing account from another service (the IdP). This process happens through a browser-mediated flow with the FedCM API.
+
+For a complete overview of the FedCM API and its goals, please refer to the [Official FedCM Documentation](https://privacysandbox.google.com/cookies/fedcm).
+
+This demo is part of a pair. You will also need to run the corresponding **[IdP Demo](../fedcm-idp-demo)** for the full sign-in flow to work.
+
+## Hosted instance
+
+We are transitioning to a new hosting solution for our live demo. Currently, you can check out the following URLs (but note that uptime for the current demo is not guaranteed):
+* [RP](https://csy9zq-8080.csb.app/)
+* [IdP](https://d2crcr-8080.csb.app/)
 
 ## Prerequisites
 
-You'll get best use out of this project if you're familiar with basic JavaScript. If you've written JavaScript for client-side web pages this is a little different because it uses server-side JS, but the syntax is the same!
+Before you begin, ensure you have the following:
 
-## What's in this project?
+1.  **Node.js and npm:** [Node.js](https://nodejs.org/) (v20+ recommended) installed on your system.
+2.  **A Compatible Browser:** A browser that [supports](https://developer.mozilla.org/en-US/docs/Web/API/FederatedCredential#browser_compatibility) the FedCM API.
 
-← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
+## Getting Started
 
-← `public/style.css`: The styling rules for the pages in your site.
+Follow these steps to set up and run the Relying Party demo server.
 
-← `server.js`: The **Node.js** server script for your new site. The JavaScript defines the endpoints in the site back-end, one to return the homepage and one to update with the submitted color. Each one sends data to a Handlebars template which builds these parameter values into the web page the visitor sees.
+### 1. Clone the Repository
 
-← `package.json`: The NPM packages for your project's dependencies.
+This project is part of a larger monorepo. To save time and space, we recommend using Git's sparse-checkout feature to download only the files needed for this specific demo.
 
-← `src/`: This folder holds the site template along with some basic data files.
+```bash
+# Create a new directory for the project and navigate into it
+git init fedcm-rp-demo-project
+cd fedcm-rp-demo-project
 
-← `src/pages/index.hbs`: This is the main page template for your site. The template receives parameters from the server script, which it includes in the page HTML. The page sends the user submitted color value in the body of a request, or as a query parameter to choose a random color.
+# Add the remote repository
+git remote add origin https://github.com/privacysandbox/privacy-sandbox-web-playbook.git
 
-← `src/colors.json`: A collection of CSS color names. We use this in the server script to pick a random color, and to match searches against color names.
+# Configure sparse checkout to only pull the RP demo directory
+git sparse-checkout set fedcm/fedcm-rp-demo
 
-← `src/seo.json`: When you're ready to share your new site or add a custom domain, change SEO/meta settings in here.
+# Pull the files from the main branch
+git pull origin main
 
-## Try this next 🏗️
+# Navigate into the demo directory to run commands
+cd fedcm/fedcm-rp-demo
+```
 
-Take a look in `TODO.md` for next steps you can try out in your new site!
+### 2. Install Dependencies
 
-___Want a minimal version of this project to build your own Node.js app? Check out [Blank Node](https://glitch.com/edit/#!/remix/glitch-blank-node)!___
+Install the required Node.js packages using npm:
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+```bash
+npm install
+```
 
-## You built this with Glitch!
+### 3. Configure environment variables
 
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
+This demo needs to know the URLs of both the Identity Provider (IdP) and itself (the Relying Party).
 
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+Create a new file in the current `fedcm/fedcm-rp-demo` directory named `.env`.
+Add the following variables to the `.env` file, replacing the example URLs with your actual IdP and RP URLs:
+
+```bash
+# The full URL of your running Identity Provider (IdP) demo
+IDP1_URL=https:/idp.example
+
+# The full URL of this Relying Party (RP) demo
+RP_URL=https://rp.exampke
+```
+
+### 4. Run
+Start the RP server:
+
+```bash
+npm run start
+```
+The server will be running and listening on http://localhost:8080. You will see a confirmation message in your terminal.
+
+## How to Use the Demo
+
+To experience the FedCM flow, you must have both the IdP server and this RP server running simultaneously.
+
+1. Start both servers: Ensure you have started the server for the IdP demo (typically on port 8080) and this RP demo (on port 8081).
+1. Navigate to the RP Website: Open your browser and go to http://localhost:8081.
+1. Initiate Sign-In: Click the button that says "Sign in with a Demo IdP".
+1. Browser UI Prompt: This action triggers the FedCM API. You should see the browser's native UI appear, asking for your consent to sign in to the "RP Demo" using your account from the "IdP Demo".
+1. Complete Sign-In: Click "Continue". The browser will securely mediate the token exchange between the IdP and the RP.
+1. Logged-In State: The RP page will update to show that you are logged in, displaying the user information it received from the IdP.

@@ -156,7 +156,7 @@ app.get("/button", (req, res) => {
   res.render("button.html", { nonce, client_id, idp_origin });
 });
 
-const port = process.env.GLITCH_DEBUGGER ? null : 8080;
+const port = process.env.GLITCH_DEBUGGER ? null : 8081;
 const listener = app.listen(port || process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

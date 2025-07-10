@@ -15,58 +15,71 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>FedCM RP Demo</title>
-    <meta name="description" content="FedCM RP Demo">
-    <link id="favicon" rel="icon" href="https://cdn.glitch.me/94838ffe-241b-4a67-a9e0-290bfe34c351%2Fbank.png?v=1639111444422" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <title>FedCM RP Demo</title>
+  <meta name="description" content="FedCM RP Demo">
+  <link id="favicon" rel="icon" href="https://cdn.glitch.me/94838ffe-241b-4a67-a9e0-290bfe34c351%2Fbank.png?v=1639111444422" type="image/x-icon">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="/bundle.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
-    <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
-    <script src="components-bundle.js" type="module"></script>
-    <meta name="nonce" content="{{nonce}}">
-    <meta name="fedcm_demo_client_id" content="{{client_id}}">
-  </head>
-  <body class="mdc-typography">
-    <mwc-top-app-bar-fixed>
-      <span slot="title">FedCM RP Demo</span>
-      <mwc-icon-button id="code" icon="code" slot="actionItems"></mwc-icon-button>
-    </mwc-top-app-bar-fixed>
-    <mwc-linear-progress id="progress"></mwc-linear-progress>
-    <main class="content">
-      <h2 class="center">
-        Welcome to FedCM RP Demo!
-      </h2>
-      <p id="unsupported" class="warning hidden">
-        Your browser does not support FedCM.
-      </p>
-      <div id="profile" class="center"></div>
-      <div id="login" class="center">
-        <p class="instructions">
-          If you don't see a sign-in dialog on top right corner, you need to sign-in on the IdP first by pressing the button below.
-        </p>
-        <mwc-button id="sign-in" icon="login" raised>Sign in with IdP</mwc-button>
-        <p class="instructions">
-          Use account ID of "<code>multiple-accounts</code>" to try mulitple accounts dialog.
-        </p>
-      </div>
-    </main>
-    <script type="module">
+  <link rel="stylesheet" href="/bundle.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+  <script src="components-bundle.js" type="module"></script>
+  <meta name="nonce" content="{{nonce}}">
+  <meta name="fedcm_demo_client_id" content="{{client_id}}">
+</head>
+<body class="mdc-typography">
+<mwc-top-app-bar-fixed>
+  <span slot="title">FedCM RP Demo</span>
+  <mwc-icon-button id="code" icon="code" slot="actionItems"></mwc-icon-button>
+</mwc-top-app-bar-fixed>
+<mwc-linear-progress id="progress"></mwc-linear-progress>
+<main class="content">
+  <h2 class="center">
+    Welcome to FedCM RP Demo!
+  </h2>
+  <p id="unsupported" class="warning hidden">
+    Your browser does not support FedCM.
+  </p>
+  <div id="profile" class="center"></div>
+  <div id="login" class="center">
+    <p class="instructions">
+      If you don't see a sign-in dialog on top right corner, you need to sign-in on the IdP first by pressing the button below.
+    </p>
+    <mwc-button id="sign-in" icon="login" raised>Sign in with IdP</mwc-button>
+    <p class="instructions">
+      Use account ID of "<code>multiple-accounts</code>" to try mulitple accounts dialog.
+    </p>
+  </div>
+</main>
+<script type="module">
       import { $, toast, loading, _fetch } from './client.js';
-      import { IdentityProvider } from 'https://fedcm-idp-demo.glitch.me/fedcm.js';
+      // import { IdentityProvider } from 'https://fedcm-idp-demo.glitch.me/fedcm.js';
       import { html, render } from 'https://unpkg.com/lit-html@2.2.0/lit-html.js?module';
 
-      $('#code').addEventListener('click', e => {
-        location.href = 'https://glitch.com/edit/#!/fedcm-rp-demo';
-      });
-      
+      // $('#code').addEventListener('click', e => {
+      //   location.href = 'https://glitch.com/edit/#!/fedcm-rp-demo';
+      // });
+
+      // const idp = new IdentityProvider({
+      //   configURL: 'https://fedcm-idp-demo.glitch.me/fedcm.json',
+      //   clientId: 'https://fedcm-rp-demo.glitch.me'
+      // });
+
+      const IDP_ORIGIN_FROM_META = document.querySelector(
+        'meta[name="fedcm_demo_idp_origin"]'
+      ).content;
+
+      import { IdentityProvider } from `${IDP_ORIGIN_FROM_META}/fedcm.js`;
+
+      const CONFIG_URL = `${IDP_ORIGIN_FROM_META}/fedcm.js`
+
       const idp = new IdentityProvider({
-        configURL: 'https://fedcm-idp-demo.glitch.me/fedcm.json',
-        clientId: 'https://fedcm-rp-demo.glitch.me'
+        configURL: configURL,
+        clientId: document.querySelector('meta[name="fedcm_demo_client_id"]').content,
       });
 
       const signIn = async () => {
@@ -126,6 +139,6 @@
         }
       });
     </script>
-    <mwc-snackbar id="snackbar"></mwc-snackbar>
-  </body>
+<mwc-snackbar id="snackbar"></mwc-snackbar>
+</body>
 </html>

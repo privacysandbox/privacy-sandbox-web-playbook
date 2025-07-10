@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  */
-
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const session = require("express-session");
@@ -42,12 +42,12 @@ app.use(
   })
 );
 
-const IDP_ORIGIN = "https://fedcm-idp-demo.glitch.me";
-const CLIENT_ID = "https://fedcm-rp-demo.glitch.me";
+const IDP_ORIGIN = process.env.IDP1_URL;
+const CLIENT_ID = process.env.RP_URL;
 
 app.use((req, res, next) => {
   if (process.env.PROJECT_DOMAIN) {
-    process.env.HOSTNAME = `${process.env.PROJECT_DOMAIN}.glitch.me`;
+    process.env.HOSTNAME = process.env.IDP1_URL;
   } else {
     process.env.HOSTNAME = req.headers.host;
   }
@@ -65,7 +65,6 @@ app.use((req, res, next) => {
 
 app.post("/verify", csrfCheck, (req, res) => {
   const raw_token = req.body.token;
-  // console.error(raw_token);
 
   try {
     const nonce = req.session.nonce.toString();
@@ -109,7 +108,8 @@ app.get("/", (req, res) => {
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("index.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("index.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/button_flow", (req, res) => {
@@ -117,7 +117,8 @@ app.get("/button_flow", (req, res) => {
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("button_flow.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("button_flow.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/authorization", (req, res) => {
@@ -125,14 +126,16 @@ app.get("/authorization", (req, res) => {
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("authorization.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("authorization.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/domain-hint", (req, res) => {
   const nonce = Math.floor(Math.random() * 10e10);
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("domain-hint.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("domain-hint.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/domain-hint-passive", (req, res) => {
@@ -140,7 +143,8 @@ app.get("/domain-hint-passive", (req, res) => {
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("domain-hint-passive.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("domain-hint-passive.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/button", (req, res) => {
@@ -148,7 +152,8 @@ app.get("/button", (req, res) => {
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
-  res.render("button.html", { nonce, client_id });
+  const idp_origin = IDP_ORIGIN;
+  res.render("button.html", { nonce, client_id, idp_origin });
 });
 
 const port = process.env.GLITCH_DEBUGGER ? null : 8080;

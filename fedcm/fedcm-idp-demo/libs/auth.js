@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  */
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
@@ -43,9 +44,9 @@ router.use(
 const RP_NAME = "WebAuthn Codelab";
 const TIMEOUT = 30 * 1000 * 60; // 30 minutes
 const IDTOKEN_LIFETIME = 1000 * 60 * 60 * 24; // 24 hours
-const ORIGIN = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
-const RP_CLIENT_ID = "https://fedcm-rp-demo.glitch.me";
-const RP_ORIGIN = "https://fedcm-rp-demo.glitch.me/";
+const ORIGIN = process.env.IDP_URL;
+const RP_CLIENT_ID = process.env.RP_URL;
+const RP_ORIGIN = process.env.RP_URL;
 const RP_MULTI_IDP_CLIENT_ID = "https://fedcm-multi-idp-rp.glitch.me";
 const RP_MULTI_IDP_ORIGIN = "https://fedcm-multi-idp-rp.glitch.me/";
 
@@ -155,6 +156,7 @@ router.post("/password", (req, res) => {
   addUser(user);
 
   req.session["signed-in"] = "yes";
+  // Login Status API
   res.set("Set-Login", "logged-in");
   res.json(user);
 });
@@ -195,24 +197,24 @@ router.post("/account", csrfCheck, apiSessionCheck, (req, res) => {
 
 router.get("/signout", (req, res) => {
   console.log("/auth/signout");
-  
-   let back = req.query.back;
+
+  let back = req.query.back;
   if (!back) {
-    back = 'https://fedcm-rp-demo.glitch.me';
+    back = process.env.RP_URL;
   }
-  
+
   // Remove the session
   req.session.destroy();
   res.set("Set-Login", "logged-out");
   // Redirect to `/`
-  res.redirect(307, "/" + (back ? `?back=${back}` : ''));
+  res.redirect(307, "/" + (back ? `?back=${back}` : ""));
 });
 
 router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
   console.log("/auth/accounts");
 
   const user = res.locals.user;
-  console.log(user)
+  console.log(user);
 
   if (user.status === "session_expired") {
     return res.status(401).json({ error: "not signed in." });
@@ -255,9 +257,9 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
         },
       ],
     });
-  } 
-  
-  if (user.username.includes('@allowed-domain.example')) {
+  }
+
+  if (user.username.includes("@allowed-domain.example")) {
     const responseData = {
       accounts: [
         {
@@ -268,20 +270,27 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
           picture: user.picture,
           // login_hints: [user.username],
           approved_clients: user.approved_clients,
-          domain_hints: ['allowed-domain.example']
+          domain_hints: ["allowed-domain.example"],
         },
       ],
     };
     // console.log(responseData.accounts[0].approved_clients);
-    return res.json(responseData); 
-  }
-  else {
+    return res.json(responseData);
+  } else {
+    if (!user.given_name && !user.last_name) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Account name cannot be empty. Return a `name` parameter in accounts endpoint",
+        });
+    }
     const responseData = {
       accounts: [
         {
           id: user.id,
           given_name: user.given_name,
-          name: `${user.given_name} ${user.family_name}`,
+          name: `${user.given_name} ${user.last_name}`,
           email: user.username,
           picture: user.picture,
           // login_hints: [user.username],
@@ -299,11 +308,13 @@ router.get("/metadata", (req, res) => {
   return res.json({
     privacy_policy_url: `${RP_ORIGIN}/privacy_policy.html`,
     terms_of_service_url: `${RP_ORIGIN}/terms_of_service.html`,
-    icons: [{
-      // Logo icons can be configured depending on the RP (on the client_id)
-      url: "https://cdn.glitch.global/1156bf10-8b7b-4c1a-91ec-6d46c61eae85/pets_40dp_CEA8BC_FILL0_wght400_GRAD0_opsz40.png?v=1721774712421",
-      size: 40
-    }]
+    icons: [
+      {
+        // Logo icons can be configured depending on the RP (on the client_id)
+        url: "https://cdn.glitch.global/1156bf10-8b7b-4c1a-91ec-6d46c61eae85/pets_40dp_CEA8BC_FILL0_wght400_GRAD0_opsz40.png?v=1721774712421",
+        size: 40,
+      },
+    ],
   });
 });
 
@@ -383,21 +394,21 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
     disclosure_text_shown,
     params,
   } = req.body;
-  
+
   let user = res.locals.user;
-  
+
   let scope;
 
   try {
     const paramsObject = JSON.parse(params);
-    if ('scope' in paramsObject) {
+    if ("scope" in paramsObject) {
       scope = paramsObject.scope;
     } else {
-      scope = undefined; 
+      scope = undefined;
     }
   } catch (error) {
     console.error("Error parsing params:", error);
-    scope = undefined; 
+    scope = undefined;
   }
 
   if (user.username === "multiple-accounts") {
@@ -412,7 +423,8 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
   // console.log("rp ID is not included: ", !RP_CLIENT_IDS.includes(client_id));
   // console.log("account id and user id do not match: ", account_id !== user.id);
   // console.log("invalid origin: ", !isValidOrigin(currentOrigin));
-
+  console.log("RP_CLIENT_IDS: ", RP_CLIENT_IDS);
+  console.log("client_id: ", client_id);
   if (
     !RP_CLIENT_IDS.includes(client_id) ||
     account_id !== user.id ||
@@ -451,11 +463,14 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
       "xxxxx"
     );
 
-    console.log("Checking if RP specified any additional required permissions in scope: ", params)
- 
-    console.log("params type: ", typeof params)
+    console.log(
+      "Checking if RP specified any additional required permissions in scope: ",
+      params
+    );
+
+    console.log("params type: ", typeof params);
     if (params) {
-      const paramsObject = JSON.parse(params); 
+      const paramsObject = JSON.parse(params);
     }
 
     if (scope) {

@@ -59,7 +59,7 @@ npm install
 
 This demo needs to know the URLs of both the Identity Provider (IdP) and itself (the Relying Party).
 
-Create a new file in the current `fedcm/fedcm-rp-demo` directory named `.env`.
+Create a new file in the current `fedcm/fedcm-rp-demo` file named `.env`.
 Add the following variables to the `.env` file, replacing the example URLs with your actual IdP and RP URLs:
 
 ```bash

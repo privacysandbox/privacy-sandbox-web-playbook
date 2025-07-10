@@ -23,6 +23,7 @@ const hbs = require("hbs");
 const auth = require("./libs/auth");
 const { sessionCheck } = require("./libs/common");
 const app = express();
+const isDevelopmentEnvironment = process.env.DEV_ENV;
 
 app.set("view engine", "html");
 
@@ -63,8 +64,10 @@ app.use(
     // store: new LowdbStore(db),
     cookie: {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      // In dev environment you may be running the code on localhost, so we need to enable cookies via HTTP
+      secure: !isDevelopmentEnvironment,
+      // SameSite='none' requires a cookie to be secure, which is not the case in dev environment
+      sameSite: isDevelopmentEnvironment ? "lax" : "none",
       maxAge: 31536000000,
     },
   })
@@ -136,7 +139,6 @@ app.get("/home", sessionCheck, (req, res) => {
   if (!back || back === "null" || back === "undefined") {
     back = process.env.RP_URL;
   }
-  console.log(user);
   // `home.html` shows sign-out link
   res.render("home.html", {
     username: req.session.username,
@@ -199,7 +201,6 @@ app.get("/reauth", (req, res) => {
 
 app.get("/.well-known/web-identity", (req, res) => {
   console.log("/.well-known/web-identity");
-  // TODO: pull from .env
   return res.json({
     provider_urls: [`${process.env.IDP_URL}/fedcm.json`],
   });

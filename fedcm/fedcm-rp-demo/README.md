@@ -69,14 +69,19 @@ IDP1_URL=https:/idp.example
 # The full URL of this Relying Party (RP) demo
 RP_URL=https://rp.exampke
 ```
+### 4. Build
 
-### 4. Run
+```bash
+npm run build
+```
+
+### 5. Run
 Start the RP server:
 
 ```bash
 npm run start
 ```
-The server will be running and listening on http://localhost:8080. You will see a confirmation message in your terminal.
+The server will be running and listening on http://localhost:8081. You will see a confirmation message in your terminal.
 
 ## How to Use the Demo
 
@@ -88,3 +93,23 @@ To experience the FedCM flow, you must have both the IdP server and this RP serv
 1. Browser UI Prompt: This action triggers the FedCM API. You should see the browser's native UI appear, asking for your consent to sign in to the "RP Demo" using your account from the "IdP Demo".
 1. Complete Sign-In: Click "Continue". The browser will securely mediate the token exchange between the IdP and the RP.
 1. Logged-In State: The RP page will update to show that you are logged in, displaying the user information it received from the IdP.
+## License
+
+```
+Copyright 2025 Google, Inc.
+
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements. See the NOTICE file distributed with this work for
+additional information regarding copyright ownership. The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+```

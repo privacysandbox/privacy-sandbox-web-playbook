@@ -39,7 +39,10 @@ const IGNORE_CONFIG = {
       '.pre-commit-config.yaml',
       'requirements.txt',
       'shared-storage/shared-storage-wasm-demo/public/parsedown.js'
-    ]
+    ],
+   fullPaths: [
+    'shared-storage/shared-storage-wasm-demo/public/parsedown.js'
+  ]
 };
 // --- End Configuration ---
 

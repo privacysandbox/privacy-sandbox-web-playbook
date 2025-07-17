@@ -1,0 +1,35 @@
+# .github/workflows/pr-checks.yml
+
+name: Repository Quality Checks
+
+# Trigger this workflow on every pull request that targets the 'main' branch
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # This job will run our validation scripts
+  lint-and-validate:
+    runs-on: ubuntu-latest # Use the latest standard Linux runner
+
+    steps:
+      # Step 1: Check out the repository's code so we can access the files
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js, which is required to run our scripts
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify a recent, stable version of Node.js
+          cache: 'npm'
+
+      # Step 3: Run the header check script on all relevant files
+      # We use `git ls-files` to get a list of all files in the repo
+      # and pipe it to our script.
+      - name: Check for License and Disclaimer Headers
+        run: git ls-files | xargs node scripts/check-headers.js
+
+      # Step 4: Run the script to check for required files in demo directories
+      - name: Check for Required Files (README, LICENSE, etc.)
+        run: node scripts/check-required-files.js

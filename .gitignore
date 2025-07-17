@@ -11,3 +11,4 @@ dist
 .viminfo
 .idea
 .DS_Store
+venv/

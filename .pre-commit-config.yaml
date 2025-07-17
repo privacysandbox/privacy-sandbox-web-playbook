@@ -1,0 +1,20 @@
+repos:
+  -   repo: local
+      hooks:
+        -   id: check-headers
+            name: Check for license and disclaimer headers
+            entry: node scripts/check-headers.js
+            language: node
+            # The script will run on all changed files and use its internal
+            # logic to ignore files that don't need headers.
+            # We can use 'exclude' for very common patterns to improve performance.
+            exclude: \.(lock|json|png|jpg|jpeg|svg|wasm)$
+
+        -   id: check-required-files
+            name: Check for README and CONTRIBUTING.md files in demos
+            entry: node scripts/check-required-files.js
+            language: node
+            # This hook checks directory structure, so it should run once.
+            # It inspects the repo state, not individual files.
+            files: '.*'
+            pass_filenames: false

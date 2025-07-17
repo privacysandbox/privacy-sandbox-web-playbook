@@ -27,6 +27,8 @@ This project follows
 
 ## Contribution process
 
+TODO
+
 ### Code reviews
 
 All submissions, including submissions by project members, require review. We

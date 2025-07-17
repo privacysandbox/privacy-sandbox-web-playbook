@@ -37,7 +37,8 @@ const IGNORE_CONFIG = {
       '.gitignore',
       '.npmrc',
       '.pre-commit-config.yaml',
-      'requirements.txt'
+      'requirements.txt',
+      'shared-storage/shared-storage-wasm-demo/public/parsedown.js'
     ]
 };
 // --- End Configuration ---

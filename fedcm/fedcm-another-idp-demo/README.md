@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # WebAuthn / FIDO2 API Codelab
 
 This folder contains the source code for the WebAuthn / FIDO2 API codelab. It gives an introduction into implementing FIDO2 API,

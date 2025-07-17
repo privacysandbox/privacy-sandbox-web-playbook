@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # FedCM Identity Provider (IdP) Demo
 
 This project is a demonstration of an **Identity Provider (IdP)** that serves authentication requests for the [Federated Credential Management (FedCM) API](https://developer.chrome.com/docs/privacy-sandbox/fedcm/).

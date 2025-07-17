@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # FedCM Relying Party (RP) Demo
 
 This project is a demonstration of a **Relying Party (RP)** implementing the [Federated Credential Management (FedCM) API](https://developer.chrome.com/docs/privacy-sandbox/fedcm/).

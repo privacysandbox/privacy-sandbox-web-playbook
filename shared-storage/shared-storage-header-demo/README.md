@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # Demo of Writing to Shared Storage from HTTP Response Headers
 
 ## Images

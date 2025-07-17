@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20' # Specify a recent, stable version of Node.js
-          cache: 'npm'
 
       # Step 3: Run the header check script on all relevant files
       # We use `git ls-files` to get a list of all files in the repo

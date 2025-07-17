@@ -51,6 +51,7 @@ function isIgnored(filePath) {
   const filename = path.basename(filePath);
   if (IGNORE_CONFIG.filenames.includes(filename)) return true;
   if (IGNORE_CONFIG.extensions.includes(extension)) return true;
+  if (IGNORE_CONFIG.fullPaths.includes(filePath)) return true;
   const directoryParts = filePath.split(path.sep);
   return directoryParts.some(part => IGNORE_CONFIG.directories.includes(part));
 }

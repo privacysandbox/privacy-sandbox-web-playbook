@@ -123,8 +123,8 @@ router.post("/username", (req, res) => {
       user = {
         username: username,
         id: base64url.encode(crypto.randomBytes(32)),
-        given_name: "",
-        family_name: "",
+        given_name: "new_given_name",
+        family_name: "new_family_name",
         picture: picture.toString(),
         approved_clients: [],
         credentials: [],
@@ -217,7 +217,6 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
   console.log("/auth/accounts");
 
   const user = res.locals.user;
-  console.log(user);
 
   if (user.status === "session_expired") {
     return res.status(401).json({ error: "not signed in." });
@@ -226,9 +225,7 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
   // Display multiple accounts for demo purposes
   if (user.username === "multiple-accounts") {
     const user2 = getUser("agektmr");
-    console.log("user2", user2);
     const user3 = getUser("john.doe");
-    console.log("user3", user3);
     return res.json({
       accounts: [
         {
@@ -280,7 +277,7 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
     // console.log(responseData.accounts[0].approved_clients);
     return res.json(responseData);
   } else {
-    if (!user.given_name && !user.last_name) {
+    if (!user.given_name && !user.family_name) {
       return res
         .status(400)
         .json({
@@ -293,7 +290,7 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
         {
           id: user.id,
           given_name: user.given_name,
-          name: `${user.given_name} ${user.last_name}`,
+          name: `${user.given_name} ${user.family_name}`,
           email: user.username,
           picture: user.picture,
           // login_hints: [user.username],
@@ -343,7 +340,6 @@ const isValidOrigin = (originStr) => {
 };
 
 router.post("/token", csrfCheck, apiSessionCheck, (req, res) => {
-  console.log(req.body);
 
   const { client_id, nonce } = req.body;
   let user = res.locals.user;
@@ -385,10 +381,6 @@ router.post("/token", csrfCheck, apiSessionCheck, (req, res) => {
 });
 
 router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
-  // console.log("/auth/idtokens");
-  // console.log("DEBUGGING: request body")
-  // console.log(req.body);
-
   const {
     client_id,
     nonce,
@@ -423,11 +415,6 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
     .replace(/\/$/, "");
 
   // If the user did not consent or the account does not match who is currently signed in, return error.
-  // console.log("rp ID is not included: ", !RP_CLIENT_IDS.includes(client_id));
-  // console.log("account id and user id do not match: ", account_id !== user.id);
-  // console.log("invalid origin: ", !isValidOrigin(currentOrigin));
-  console.log("RP_CLIENT_IDS: ", RP_CLIENT_IDS);
-  console.log("client_id: ", client_id);
   if (
     !RP_CLIENT_IDS.includes(client_id) ||
     account_id !== user.id ||

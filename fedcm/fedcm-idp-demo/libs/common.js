@@ -24,12 +24,10 @@ const { getUser } = require('./db');
  * If the session doesn't contain `signed-in`, consider the user is not authenticated.
  **/
 const sessionCheck = (req, res, next) => {
-  console.log('session:', req.session);
   if (!req.session['signed-in']) {
     return res.redirect(307, '/');
   }
   const user = getUser(req.session.username);
-  console.log('user:', user);
   if (!user) {
     return res.redirect(307, '/');
   }
@@ -39,7 +37,6 @@ const sessionCheck = (req, res, next) => {
 };
 
 const apiSessionCheck = (req, res, next) => {
-  console.log('session:', req.session);
   if (!req.session['signed-in']) {
     return res.status(401).json({ error: 'not signed in.' });
   }

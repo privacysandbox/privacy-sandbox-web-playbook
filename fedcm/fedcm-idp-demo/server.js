@@ -130,7 +130,6 @@ app.get("/authorization", (req, res) => {
 
 app.get("/iframe", (req, res) => {
   const user = res.locals.user;
-  console.log(user);
   // `home.html` shows sign-out link
   const ot_token = process.env.OT_TOKEN;
   res.render("iframe.html", { ot_token });
@@ -146,8 +145,8 @@ app.get("/home", sessionCheck, (req, res) => {
   res.render("home.html", {
     username: req.session.username,
     approved_clients: user.approved_clients,
-    given_name: user.given_name || "",
-    family_name: user.family_name || "",
+    given_name: user.given_name || "new_given_name",
+    family_name: user.family_name || "new_family_name",
     picture: user.picture || "",
     backURL: back,
     statuses: [
@@ -198,7 +197,6 @@ app.get("/reauth", (req, res) => {
   // Show `reauth.html`.
   // User is supposed to enter a password (which will be ignored)
   // Make XHR POST to `/signin`
-  // const ot_token = process.env.OT_TOKEN;
   res.render("reauth.html", { username });
 });
 

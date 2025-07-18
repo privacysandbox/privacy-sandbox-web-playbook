@@ -10,6 +10,60 @@ For a complete overview of the FedCM API and its goals, please refer to the [Off
 
 This demo is part of a pair. You will also need to run the corresponding **[IdP Demo](../fedcm-idp-demo)** for the full sign-in flow to work.
 
+## Setting up a mock cross-site environment 
+
+For the FedCM flow to work correctly and to accurately simulate a real-world scenario, your browser needs to perceive the Identity Provider (IdP) and Relying Party (RP) as **separate, secure domains**. 
+
+This section explains how to use **Caddy** to set up a local reverse proxy that serves your demos on mock domains with HTTPS. This ensures your browser treats them as cross-site, allowing you to test FedCM in an appropriate context.
+
+### 1. Update Your Hosts File
+
+This step requires **administrator/root privileges**.
+
+Add the following entries to your system's hosts file. This maps the mock domains to your local machine (`127.0.0.1`), allowing your browser to find them.
+
+* **Windows:** `C:\Windows\System32\drivers\etc\hosts`
+* **macOS/Linux:** `/etc/hosts`
+
+```
+127.0.0.1       fedcm-idp-demo.local
+127.0.0.1       fedcm-rp-demo.local
+```
+
+### 2. Start the Caddy Proxy
+
+A Caddy configuration file (`caddy/Caddyfile`) and a startup script (`mock-cross-site-env.sh` or `.bat`) are provided in the `fedcm/` directory of this monorepo.
+
+This script will start Caddy, which automatically handles HTTPS certificate generation and trust for `fedcm-idp-demo.local` and `fedcm-rp-demo.local`. The first time you run it, Caddy will ask for your system password to install a local certificate authority (CA) into your browser's trust store.
+
+Navigate to the `fedcm` directory and run the script:
+
+```bash
+cd fedcm
+chmod +x mock-cross-site-env.sh # Only needed once
+./mock-cross-site-env.sh
+```
+
+Keep the terminal window where Caddy is running open.
+
+### 3. Configure environment variables
+
+You need to specify the URLs of both the Identity Provider (IdP) and itself (the Relying Party).
+
+Create a new file in the current fedcm/fedcm-rp-demo file named .env.
+Add the following variables to the .env file, replacing the example URLs with your actual IdP and RP URLs with the mock domains you just set up:
+
+```
+PROVIDER_URLS=["https://fedcm-idp-demo.local"]
+RP_URL=https://fedcm-rp-demo.local
+IDP_URL=https://fedcm-idp-demo.local
+```
+
+### 4. Run the demos
+Now make sure that the demos run on the right ports specified in the `/privacy-sandbox-web-playbook/fedcm/caddy/Caddyfile`. You can also modify thoe as needed, but the default is:
+* IdP: 8080
+* RP: 8081
+
 ## Hosted instance
 
 We are transitioning to a new hosting solution for our live demo. Currently, you can check out the following URLs (but note that uptime for the current demo is not guaranteed):

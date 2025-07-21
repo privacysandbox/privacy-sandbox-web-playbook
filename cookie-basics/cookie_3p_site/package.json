@@ -1,0 +1,27 @@
+{
+  "name": "ps-metrics",
+  "version": "0.0.1",
+  "description": "Metrics for Privacy Sandbox relevance and measurement APIs.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "latest",
+    "express": "latest"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "repository": {
+    "type": "glitch",
+    "url": "https://glitch.com/edit/#!/topics-demo"
+  },
+  "homepage": "https://github.com/samdutton/ps-metrics#readme",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "privacy sandbox"
+  ]
+}

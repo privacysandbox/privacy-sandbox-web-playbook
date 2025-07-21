@@ -1,0 +1,131 @@
+/* Copyright 2025 Google LLC.
+SPDX-License-Identifier: Apache-2.0 */
+
+:root {
+  --small-mobile-font-size: 20px;
+  --large-mobile-font-size: 22px;
+  --desktop-font-size: 18px;
+}
+
+a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.list {
+  display: block;
+  font-size: 19px;
+}
+
+a.list::before {
+  content: "•";
+  display: inline-block;
+  padding: 0  10px 0 0;
+}
+
+body {
+  font-family: sans-serif;
+  font-weight: 100;
+  margin: 10px 15px 0 15px;
+}
+
+code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9em;
+  font-weight: 100;
+}
+
+div#log {
+  background-color: #eeeeee;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  color: #444444;
+  font-family: Roboto Mono, Consolas, monospace;
+  line-height: 2em;
+  padding: 0 10px;
+  white-space: pre-wrap;
+}
+
+footer {
+  border-top: 1px solid #cccccc;
+  line-height: 2em;
+  margin: 50px auto 0 auto;
+  max-width: 600px;
+  padding: 0 0 0 0;
+}
+
+h1 {
+  border-bottom: 1px solid #cccccc;
+  font-size: 28px;
+  font-weight: 100;
+  margin: 0 0 60px 0;
+  padding: 0 0 10px 0;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 100;
+  margin: 40px 0 20px 0;
+}
+
+iframe {
+  background: #ffeeee;
+  border: none;
+  display: inline-block;
+  height: 167px;
+  margin: 20px 0 0 0;
+  padding: 0 5px;
+  width:  240px;
+}
+
+img {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  width: 250px;
+}
+
+li {
+  font-size: 18px;
+  font-weight: 100;
+  line-height: 1.5em;
+  margin: 0 0 1em 0;
+}
+
+main {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+p {
+  font-size: 18px;
+  font-weight: 100;
+  line-height: 1.5em;
+}
+
+pre {
+  border-bottom: 1px solid #cccccc;
+  font-size: 16px;
+  line-height: 1.5em;
+  margin: 40px 0 60px 0;
+  padding: 0 0 60px 0;
+}
+
+@media (min-width: 400px) {
+  
+  h1 {
+    font-size: 36px;
+  }
+
+}
+
+@media (min-width: 500px) {
+
+  body {
+    margin: 70px 70px 0 70px;
+  }
+
+}

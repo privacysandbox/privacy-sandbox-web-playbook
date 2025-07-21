@@ -1,4 +1,4 @@
-/* Copyright 2024 Google LLC.
+/* Copyright 2025 Google LLC.
 SPDX-License-Identifier: Apache-2.0 */
 
 :root {
@@ -29,14 +29,12 @@ a.list::before {
 
 body {
   font-family: sans-serif;
-  font-weight: 100;
+  font-weight: 500;
   margin: 10px 15px 0 15px;
 }
 
 code {
-  font-family: 'Roboto Mono', monospace;
   font-size: 0.9em;
-  font-weight: 100;
 }
 
 div#log {
@@ -50,64 +48,50 @@ div#log {
   white-space: pre-wrap;
 }
 
+
 footer {
   border-top: 1px solid #cccccc;
   line-height: 2em;
-  margin: 50px auto 0 auto;
-  max-width: 600px;
-  padding: 0 0 0 0;
+  margin: 80px auto 0 auto;
+  max-width: 1000px;
+  padding: 10px 0 0 0;
 }
 
 h1 {
   border-bottom: 1px solid #cccccc;
   font-size: 28px;
-  font-weight: 100;
+  font-weight: 200;
   margin: 0 0 60px 0;
   padding: 0 0 10px 0;
 }
 
 h2 {
+  border-top: 1px solid #cccccc;
   font-size: 24px;
-  font-weight: 100;
+  font-weight: 200;
   margin: 40px 0 20px 0;
-}
-
-iframe {
-  background: #ffeeee;
-  border: none;
-  display: inline-block;
-  height: 167px;
-  margin: 20px 0 0 0;
-  padding: 0 5px;
-  width:  240px;
+  padding: 30px 0 0 0;
 }
 
 img {
-   max-width: 100%;
-}
-
-img#kittens {
-  display: inline-block;
-  margin: 0 20px 0 0;
-  width: 250px;
+  max-width: 100%;
 }
 
 li {
-  font-size: 18px;
-  font-weight: 100;
+  font-size: 19px;
+  font-weight: 200;
   line-height: 1.5em;
   margin: 0 0 1em 0;
 }
 
 main {
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 1000px;
 }
 
 p {
-  font-size: 18px;
-  font-weight: 100;
-  line-height: 1.5em;
+  font-size: 19px;
+  font-weight: 200;
 }
 
 pre {
@@ -118,10 +102,19 @@ pre {
   padding: 0 0 60px 0;
 }
 
+#cohort-id, #cohort-version {
+  color: darkgreen;
+  font-weight: bold;
+}
+
 @media (min-width: 400px) {
   
   h1 {
     font-size: 36px;
+  }
+
+  p {
+    line-height: 1.5em;
   }
 
 }

@@ -1,0 +1,96 @@
+<!-- Copyright 2025 Google LLC. SPDX-License-Identifier: Apache-2.0 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>Third-party cookie demo</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/main.css">
+
+  <script src="/components/cookie-banner.js" async defer></script>
+  <cookie-banner></cookie-banner>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-754F24EHD8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-754F24EHD8');
+  </script>
+
+</head>
+
+<body>
+
+  <main>
+
+    <h1>Third-party cookie demo</h1>
+
+    <p>The image and iframe on this page are from a different site:<br><a href="https://3p-site.glitch.me">3p-site.glitch.me</a></p> 
+
+    <p>A <code>Set-Cookie</code> header is included with the response to the request for both the image and the iframe:</p>
+
+    <ul>
+      
+      <li>Image: <a href="https://3p-site.glitch.me/images/kittens.jpg">3p-site.glitch.me/images/kittens.jpg</a><br>
+        Response header:<br><code>Set-Cookie: cat=tabby; Path=/; Max-Age=86400; Secure; HTTPOnly</code><br>
+        This header has no <code>SameSite</code> attribute, so the default <code>SameSite=Lax</code> is applied. The <code>Lax</code> default blocks cross-site cookies except in response to following a link to a web page, so cross-site requests for this image will not include the cookie.</li>
+      
+      <li>Iframe: <a href="https://3p-site.glitch.me/iframe/">3p-site.glitch.me/iframe/index.html</a><br>
+          Response header:<br><code>Set-Cookie: cat=tabby; Path=/; Max-Age=86400; Secure; HTTPOnly SameSite=None</code><br>
+          This header has a <code>SameSite=None</code> attribute, so the cookie will be included in response to cross-site requests to this iframe.</li>
+    
+    </ul>
+    
+    <p>Find out more: <a href="https://goo.gle/cookies#samesite">Cookie SameSite attribute</a></p>
+
+    <img src="https://3p-site.glitch.me/images/kittens.jpg" alt="Two tabby kittens: Little Puss and Lias">
+
+    <iframe src="https://3p-site.glitch.me/iframe"></iframe>
+
+
+    <h2>See how it works</h2>
+
+    <ol>      
+      <li>Open the Chrome DevTools Network&nbsp;panel</li>
+      <li>Click on <code>index.html</code> (from the iframe) or <code>kittens.jpg</code></li>
+      <li>In the Headers tab, view <code>Set-Cookie</code> in the Response Headers.</li>
+      <li>The first time you open the page, no cookies have been set yet, so there won't be a <code>Cookie</code> entry in the Request Headers.</li>
+      <li>Subsequent requests will include <code>Cookie</code> headers. A request for the image will include both the <code>cat=tabby</code> and <code>iframe-seen=true</code> cookies. Other requests will only include <code>iframe-seen=true</code>.</li>
+      <li>You can also view cookies from the Application panel. Try Ctrl-Alt-click to clear cookies, and then reopen the page.</li>
+    </ol>
+
+    <p>You can view the backend Node code that sets the cookies in <a href="https://glitch.com/edit/#!/1pc?path=server.js:12">server.js</a>.</p>
+
+  </main>
+
+    <footer>
+
+      <h2>Find out more</h2>
+      
+      <ul>
+        <li><a href="https://glitch.com/edit/#!/1pc">Code for this demo</a></li>
+        <li><a href="https://1pc.glitch.me">First-party cookie demo</a></li>
+        <li><a href="https://javascript-cookie.glitch.me">JavaScript cookie demo</a></li>
+        <li><a href="https://samesite-a.glitch.me">SameSite cookie demo</a></li>
+        <li><a href="https://example-a.glitch.me">Cross-site cookie tracking demo</a></li>
+        <li><a href="https://goo.gle/cookies">What are cookies?</a></li>
+        <li><a href="https://goo.gle/3pc">What are third-party cookies?</a></li>
+        <li><a href="https://goo.gle/cookie-attributes">Cookie attributes</a></li>
+        <li><a href="https://goo.gle/cookie-demos">Cookie demos</a></li>
+        <li><a href="https://goo.gle/cookie-tools">Cookie tools</a></li>
+      </ul>
+      
+      <p>If you find bugs with this demo, or would like to suggest changes, please message <a href="https//twitter.com/sw12">@sw12</a>.</p>
+      
+    </footer>
+
+</body>
+
+</html>

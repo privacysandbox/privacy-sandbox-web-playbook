@@ -17,7 +17,7 @@
     "express": "^4.17.2",
     "hbs": "^4.1.1",
     "lowdb": "^1.0.0",
-    "webpack": "^4.44.1",
+    "webpack": "^5.100.2",
     "webpack-cli": "^3.3.12",
     "@babel/core": "^7.16.0",
     "babel-loader": "^8.2.3",

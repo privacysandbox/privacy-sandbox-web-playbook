@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # First-party cookie demo
 
 Cookies are set in response to requests for the image and iframe on this page.

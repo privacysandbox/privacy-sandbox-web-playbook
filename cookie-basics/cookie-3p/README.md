@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # Third-party cookie demo
 
 This page includes an image and an iframe from a different site: [3p-site.glitch.me](https://3p-site.glitch.me). 

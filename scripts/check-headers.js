@@ -38,7 +38,9 @@ const IGNORE_CONFIG = {
       '.npmrc',
       '.pre-commit-config.yaml',
       'requirements.txt',
-      'shared-storage/shared-storage-wasm-demo/public/parsedown.js'
+      'shared-storage/shared-storage-wasm-demo/public/parsedown.js',
+      '.gcloudignore',
+      '.ignore.md'
     ],
    fullPaths: [
     'shared-storage/shared-storage-wasm-demo/public/parsedown.js'

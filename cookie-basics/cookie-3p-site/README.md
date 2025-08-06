@@ -1,3 +1,5 @@
+*This is not an officially supported Google product*
+
 # A "third-party" site that serves files and set cookies 
 
 This is the "third-party" site used by the demo at [3pc.glitch.me](https://3pc.glitch.me). 

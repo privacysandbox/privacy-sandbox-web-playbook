@@ -1,6 +1,6 @@
 /*
  * @license
- * Copyright 2025 Google Inc. All rights reserved.
+ * Copyright 2019 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,20 @@
  *
  * NOTE: This is not an officially supported Google product
  */
-
-const path = require('path');
-const express = require('express');
-const session = require('express-session');
-const hbs = require('hbs');
-const auth = require('./libs/auth');
-const { sessionCheck } = require('./libs/common');
+require("dotenv").config();
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+// const LowdbStore = require('lowdb-session-store')(session);
+const hbs = require("hbs");
+const auth = require("./libs/auth");
+const { sessionCheck } = require("./libs/common");
 const app = express();
+const isDevelopmentEnvironment = process.env.DEV_ENV;
 
-app.set('view engine', 'html');
+app.set("view engine", "html");
 
-hbs.registerHelper('isEqual', (value1, value2, options) => {
+hbs.registerHelper("isEqual", (value1, value2, options) => {
   if (value1 === value2) {
     return options.fn(this);
   } else {
@@ -36,27 +38,44 @@ hbs.registerHelper('isEqual', (value1, value2, options) => {
   }
 });
 
-app.engine('html', hbs.__express);
-app.set('views', './views');
+app.engine("html", hbs.__express);
+app.engine("js.hbs", hbs.__express);
+app.engine("js", hbs.__express);
+
+// Set up multiple view directories
+app.set("views", [
+  path.join(__dirname, "views"), // For your .html templates
+  path.join(__dirname, "public"), // For your .js.hbs template
+]);
+app.set("view engine", "html");
+// app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
-app.use(express.static('public', { setHeaders: (res) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET');
-}}));
-app.use(express.static('dist'));
-app.use(session({
-  secret: 'secret', // You should specify a real secret here
-  resave: true,
-  saveUninitialized: false,
-  proxy: true,
-  // store: new LowdbStore(db),
-  cookie:{
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    maxAge: 31536000000
-  }
-}));
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    setHeaders: (res) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Methods", "GET");
+    },
+  })
+);
+app.use(express.static(path.join(__dirname, "dist")));
+app.use(
+  session({
+    secret: "secret", // You should specify a real secret here
+    resave: true,
+    saveUninitialized: false,
+    proxy: true,
+    // store: new LowdbStore(db),
+    cookie: {
+      httpOnly: true,
+      // In dev environment you may be running the code on localhost, so we need to enable cookies via HTTP
+      secure: !isDevelopmentEnvironment,
+      // SameSite='none' requires a cookie to be secure, which is not the case in dev environment
+      sameSite: isDevelopmentEnvironment ? "lax" : "none",
+      maxAge: 31536000000,
+    },
+  })
+);
 
 app.use((req, res, next) => {
   if (process.env.PROJECT_DOMAIN) {
@@ -64,151 +83,215 @@ app.use((req, res, next) => {
   } else {
     process.env.HOSTNAME = req.headers.host;
   }
-  const protocol = /^localhost/.test(process.env.HOSTNAME) ? 'http' : 'https';
+  const protocol = /^localhost/.test(process.env.HOSTNAME) ? "http" : "https";
   process.env.ORIGIN = `${protocol}://${process.env.HOSTNAME}`;
   if (
-    req.get('x-forwarded-proto') &&
-    req.get('x-forwarded-proto').split(',')[0] !== 'https'
+    req.get("x-forwarded-proto") &&
+    req.get("x-forwarded-proto").split(",")[0] !== "https"
   ) {
     return res.redirect(301, process.env.ORIGIN);
   }
-  req.schema = 'https';
+  req.schema = "https";
   return next();
 });
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get('/', (req, res) => {
-  if (req.session.username && req.session['signed-in']) {
-    return res.redirect(307, '/home');
+app.get("/", (req, res) => {
+  let back = req.query.back;
+  if (!back || back === "null" || back === "undefined") {
+    back = process.env.RP_URL;
+  }
+
+  if (req.session.username && req.session["signed-in"]) {
+    return res.redirect(307, `/home?back=${back}`);
   }
   // Check session
   if (req.session.username) {
     // If the user is signed in, redirect to `/reauth`.
-    return res.redirect(307, '/reauth');
+    return res.redirect(302, `/reauth?back=${back}`);
   }
   // If user is not signed in, show `index.html` with id/password form.
   const ot_token = process.env.OT_TOKEN;
-  res.render('index.html', { ot_token });
+  res.render("index.html", { ot_token });
 });
 
-app.get('/authorization', (req, res) => {
-  if (!req.session.username || !req.session['signed-in']) {
+app.get("/authorization", (req, res) => {
+  let back = req.query.back;
+  if (!back || back === "null" || back === "undefined") {
+    back = process.env.RP_URL;
+  }
+
+  if (!req.session.username || !req.session["signed-in"]) {
     // If the user is not signed in, redirect to `/`.
-    return res.redirect(307, '/');
+    return res.redirect(307, "/");
   }
   const ot_token = process.env.OT_TOKEN;
-  res.render('authorization.html', { ot_token });
+  res.render("authorization.html", { ot_token });
 });
 
-app.get('/iframe', (req, res) => {
+app.get("/iframe", (req, res) => {
   const user = res.locals.user;
-  console.log(user);
   // `home.html` shows sign-out link
   const ot_token = process.env.OT_TOKEN;
-  res.render('iframe.html', { ot_token });
+  res.render("iframe.html", { ot_token });
 });
 
-app.get('/home', sessionCheck, (req, res) => {
+app.get("/home", sessionCheck, (req, res) => {
   const user = res.locals.user;
   let back = req.query.back;
-  if (!back) {
-    back = 'https://fedcm-multi-idp-rp.glitch.me';
+  if (!back || back === "null" || back === "undefined") {
+    back = process.env.RP_URL;
   }
-  console.log(user);
   // `home.html` shows sign-out link
-  res.render('home.html', {
+  res.render("home.html", {
     username: req.session.username,
     approved_clients: user.approved_clients,
-    given_name: user.given_name || '',
-    family_name: user.family_name || '',
-    picture: user.picture || '',    
+    given_name: user.given_name || "new_given_name",
+    family_name: user.family_name || "new_family_name",
+    picture: user.picture || "",
     backURL: back,
-    statuses: [{
-      value: '',
-      string: 'Signed In'
-    }, {
-      value: 'session_expired',
-      string: 'Session Expired'
-    }, {
-      value: 'invalid_request',
-      string: 'Invalid Request'
-    }, {
-      value: 'unauthorized_client',
-      string: 'Unauthorized Client'
-    }, {
-      value: 'access_denied',
-      string: 'Access Denied'
-    }, {
-      value: 'server_error',
-      string: 'Server Error'
-    }, {
-      value: 'temporarily_unavailable',
-      string: 'Temporarily Unavailable'
-    }],
+    statuses: [
+      {
+        value: "",
+        string: "Signed In",
+      },
+      {
+        value: "session_expired",
+        string: "Session Expired",
+      },
+      {
+        value: "invalid_request",
+        string: "Invalid Request",
+      },
+      {
+        value: "unauthorized_client",
+        string: "Unauthorized Client",
+      },
+      {
+        value: "access_denied",
+        string: "Access Denied",
+      },
+      {
+        value: "server_error",
+        string: "Server Error",
+      },
+      {
+        value: "temporarily_unavailable",
+        string: "Temporarily Unavailable",
+      },
+    ],
     status: user.status,
-    demo_account: user.username === 'demo@example.com'
+    demo_account: user.username === "demo@example.com",
   });
 });
 
-app.get('/reauth', (req, res) => {
+app.get("/reauth", (req, res) => {
+  let back = req.query.back;
+  if (!back || back === "null" || back === "undefined") {
+    back = process.env.RP_URL;
+  }
+
   const username = req.session.username;
   if (!username) {
-    return res.redirect(307, '/');
+    return res.redirect(307, "/");
   }
   // Show `reauth.html`.
   // User is supposed to enter a password (which will be ignored)
   // Make XHR POST to `/signin`
-  const ot_token = process.env.OT_TOKEN;
-  res.render('reauth.html', { username, ot_token });
+  res.render("reauth.html", { username });
 });
 
-app.get('/.well-known/web-identity', (req, res) => {
-  console.log('/.well-known/web-identity');
-
+app.get("/.well-known/web-identity", (req, res) => {
+  console.log("Accessing /.well-known/web-identity");
   return res.json({
-    "provider_urls": ["https://fedcm-another-idp-demo.glitch.me/fedcm.json" ]
+    provider_urls: [
+      `${process.env.IDP2_URL}/fedcm.json`,
+    ],
   });
 });
 
-app.get('/fedcm.json', (req, res) => {
-  console.log('/fedcm.json');
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET');
+app.get("/fedcm.json", (req, res) => {
+  console.log("loading /fedcm.json...");
+
   return res.json({
-    "accounts_endpoint": "/auth/accounts",
-    "client_metadata_endpoint": "/auth/metadata",
-    "id_assertion_endpoint": "/auth/idtokens",
-    "disconnect_endpoint": "/auth/disconnect",
-    "login_url": "/",
-    "modes": {
-      "active": {
-        "supports_use_other_account": false,
+    accounts_endpoint: "/auth/accounts",
+    client_metadata_endpoint: "/auth/metadata",
+    id_assertion_endpoint: "/auth/idtokens",
+    disconnect_endpoint: "/auth/disconnect",
+    login_url: "/",
+    modes: {
+      active: {
+        supports_use_other_account: true,
       },
-      "passive": {
-        "supports_use_other_account": false,
-      }
+      // ,"passive": {
+      //   "supports_use_other_account": true,
+      // }
     },
-    "branding": {
-      "icons": [{
-        "url": "https://cdn.glitch.global/4cc67ace-0a9a-430e-a071-8f05043f83de/idp-2-logo.png?v=1744206327848",
-        "size": 512,
-      }]
-    }
+    branding: {
+      background_color: "#edba00",
+      color: "#ffffff",
+      icons: [
+        {
+          url: "/idp-logo.png",
+          size: 512,
+        },
+      ],
+    },
   });
 });
 
-app.use('/auth', auth);
+app.get("/fedcm.js", (req, res) => {
+  res.setHeader("Content-Type", "application/javascript");
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Set-cookie", "test");
+
+  return res.render(path.join(__dirname, "public", "fedcm.js.hbs"), {
+    rp_origin: process.env.RP_URL,
+    idp_1_origin: process.env.IDP_URL,
+    idp_2_origin: process.env.IDP2_URL,
+  })
+  ;
+});
+
+app.get("/client.js", (req, res) => {
+  res.setHeader("Content-Type", "application/javascript");
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Set-cookie", "test");
+  return res.sendFile(path.join(__dirname, "public", "client.js"), {
+    idp_origin: process.env.IDP_URL,
+    rp_origin: process.env.RP_URL,
+  });
+});
+
+app.get("/client-metadata-static.json", (req, res) => {
+  console.log("loading /client-metadata-static.json...");
+
+  return res.json({
+    terms_of_service_url: `${process.env.IDP_URL}/terms_of_service.html`,
+    brand_icon_url:
+      "https://cdn.glitch.global/32bb3785-b985-4733-a2b1-2dfc919d2250/shrine.png?v=1721700610752",
+    client_matches_top_frame_origin: true,
+    icons: [
+      {
+        url: "https://cdn.glitch.global/32bb3785-b985-4733-a2b1-2dfc919d2250/shrine.png?v=1721700610752",
+        size: 40,
+      },
+    ],
+  });
+});
+
+app.use("/auth", auth);
 
 // dylancutler@ added to allow for cross-site Clear-Site-Data.
-app.get('/clear-site-data', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://fedcm-multi-idp-rp.glitch.me');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Clear-Site-Data', '"*"');
+app.get("/clear-site-data", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", process.env.RP_URL);
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Clear-Site-Data", '"*"');
   res.status(200).end();
 });
 
 // listen for req :)
-const port = process.env.GLITCH_DEBUGGER ? null : 8080;
+const port = process.env.GLITCH_DEBUGGER ? null : 8082;
 const listener = app.listen(port || process.env.PORT, () => {
-  console.log('Your app is listening on port ' + listener.address().port);
+  console.log("Your app is listening on port " + listener.address().port);
 });

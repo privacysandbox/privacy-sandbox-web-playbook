@@ -1,6 +1,6 @@
 /*
  * @license
- * Copyright 2019 Google Inc. All rights reserved.
+ * Copyright 2025 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,28 @@
  *
  * NOTE: This is not an officially supported Google product
  */
-const IDP_ORIGIN = 'https://fedcm-another-idp-demo.glitch.me/fedcm.json';
-const CLIENT_ID = 'https://fedcm-multi-idp-rp.glitch.me';
+
+const IDP_ORIGIN = "{{idp_origin}}";
+const CLIENT_ID = "{{rp_origin}}";
 
 export const $ = document.querySelector.bind(document);
 
 export const toast = (text) => {
-  $('#snackbar').labelText = text;
-  $('#snackbar').show();
-}
+  $("#snackbar").labelText = text;
+  $("#snackbar").show();
+};
 
-export const _fetch = async (path, payload = '') => {
+export const _fetch = async (path, payload = "") => {
   const headers = {
-    'X-Requested-With': 'XMLHttpRequest',
+    "X-Requested-With": "XMLHttpRequest",
   };
   if (payload && !(payload instanceof FormData)) {
-    headers['Content-Type'] = 'application/json';
+    headers["Content-Type"] = "application/json";
     payload = JSON.stringify(payload);
   }
   const res = await fetch(path, {
-    method: 'POST',
-    credentials: 'same-origin',
+    method: "POST",
+    credentials: "same-origin",
     headers: headers,
     body: payload,
   });
@@ -53,40 +54,40 @@ export const _fetch = async (path, payload = '') => {
 
 export const queryBack = () => {
   const url = new URL(location.href);
-  let queryBack = url.searchParams.get('back');
-  let back = '';
+  let queryBack = url.searchParams.get("back");
+  let back = "";
   if (queryBack) {
     const backURL = new URL(decodeURIComponent(queryBack));
-    if (backURL.host === 'fedcm-multi-idp-rp.glitch.me') {
+    if (backURL.host === "fedcm-rp-demo.glitch.me") {
       back = backURL.toString();
     }
   }
   return back;
-}
+};
 
 export const getUserInfo = async () => {
   if (window.IdentityProvider && IdentityProvider.getUserInfo) {
     const user_info = await IdentityProvider.getUserInfo({
       configURL: IDP_ORIGIN,
-      clientId: CLIENT_ID
+      clientId: CLIENT_ID,
     });
     if (user_info.length > 0) {
       return user_info[0];
     }
   }
-  throw new Error('getUserInfo is not available');
-}
+  throw new Error("getUserInfo is not available");
+};
 
 export const registerCredential = async () => {
   const opts = {
-    attestation: 'none',
+    attestation: "none",
     authenticatorSelection: {
-      authenticatorAttachment: 'platform',
-      userVerification: 'required',
-      requireResidentKey: false
-    }
+      authenticatorAttachment: "platform",
+      userVerification: "required",
+      requireResidentKey: false,
+    },
   };
-  const options = await _fetch('/auth/registerRequest', opts);
+  const options = await _fetch("/auth/registerRequest", opts);
 
   options.user.id = base64url.decode(options.user.id);
   options.challenge = base64url.decode(options.challenge);
@@ -107,10 +108,8 @@ export const registerCredential = async () => {
   credential.type = cred.type;
 
   if (cred.response) {
-    const clientDataJSON =
-      base64url.encode(cred.response.clientDataJSON);
-    const attestationObject =
-      base64url.encode(cred.response.attestationObject);
+    const clientDataJSON = base64url.encode(cred.response.clientDataJSON);
+    const attestationObject = base64url.encode(cred.response.attestationObject);
     credential.response = {
       clientDataJSON,
       attestationObject,
@@ -119,13 +118,13 @@ export const registerCredential = async () => {
 
   localStorage.setItem(`credId`, credential.id);
 
-  return await _fetch('/auth/registerResponse', credential);
+  return await _fetch("/auth/registerResponse", credential);
 };
 
 export const authenticate = async () => {
   const opts = {};
 
-  let url = '/auth/signinRequest';
+  let url = "/auth/signinRequest";
   const credId = localStorage.getItem(`credId`);
   if (credId) {
     url += `?credId=${encodeURIComponent(credId)}`;
@@ -134,7 +133,7 @@ export const authenticate = async () => {
   const options = await _fetch(url, opts);
 
   if (options.allowCredentials.length === 0) {
-    console.info('No registered credentials found.');
+    console.info("No registered credentials found.");
     return Promise.resolve(null);
   }
 
@@ -154,14 +153,10 @@ export const authenticate = async () => {
   credential.rawId = base64url.encode(cred.rawId);
 
   if (cred.response) {
-    const clientDataJSON =
-      base64url.encode(cred.response.clientDataJSON);
-    const authenticatorData =
-      base64url.encode(cred.response.authenticatorData);
-    const signature =
-      base64url.encode(cred.response.signature);
-    const userHandle =
-      base64url.encode(cred.response.userHandle);
+    const clientDataJSON = base64url.encode(cred.response.clientDataJSON);
+    const authenticatorData = base64url.encode(cred.response.authenticatorData);
+    const signature = base64url.encode(cred.response.signature);
+    const userHandle = base64url.encode(cred.response.userHandle);
     credential.response = {
       clientDataJSON,
       authenticatorData,
@@ -174,6 +169,6 @@ export const authenticate = async () => {
 };
 
 export const unregisterCredential = async (credId) => {
-  localStorage.removeItem('credId');
+  localStorage.removeItem("credId");
   return _fetch(`/auth/removeKey?credId=${encodeURIComponent(credId)}`);
 };

@@ -79,17 +79,41 @@
         render,
       } from "https://unpkg.com/lit-html@2.2.0/lit-html.js?module";
 
+
+      const isMultiIdpFlow = {{#if multi_idp}}true{{else}}false{{/if}};
+
       import { IdentityProvider } from "{{idp_origin}}/fedcm.js";
 
-      const idp = new IdentityProvider({
-        configURL: "{{idp_origin}}/fedcm.json",
-        clientId: "{{client_id}}",
-      });
+      let idp;
+
+      {{#if multi_idp}}
+          // For the multi-IdP flow, import the SDK from the second IdP-2.
+          // This specific SDK is designed to present both IdP options to the user.
+          import { IdentityProvider as IdentityProvider2 }  from "{{idp2_origin}}/fedcm.js" ;
+          idp = new IdentityProvider2();
+      {{else}}
+          // For the single-IdP flow, import the SDK from the primary IdP.
+          idp = new IdentityProvider({
+            configURL: "{{idp_origin}}/fedcm.json",
+            clientId: "{{client_id}}",
+          });
+      {{/if}}
+      
 
       const signIn = async () => {
         try {
+          
           const token = await idp.signIn();
-          const user = await _fetch("/verify", { token });
+
+          // Construct the payload for the verification request.
+            const payload = { token };
+
+          // Conditionally add the multi_idp flag if it's true.
+          if (isMultiIdpFlow) {
+            payload.multi_idp = true;
+          }
+          
+          const user = await _fetch("/verify", payload);
           render(
             html`
           <p>You are signed in!</p>
@@ -163,6 +187,6 @@
         $("#unsupported").classList.remove("hidden");
       }
     </script>
-<mwc-snackbar id="snackbar"></mwc-snackbar>
-</body>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+  </body>
 </html>

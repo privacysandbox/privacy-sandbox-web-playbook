@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  *
+ *
  * NOTE: This is not an officially supported Google product
  */
 
 * {
   box-sizing: border-box;
-  --mdc-theme-primary: orange;
+  --mdc-theme-secondary: red;
+  --mdc-theme-primary: #edba00 !important;
 }
 
 body {
@@ -80,7 +82,7 @@ mwc-button, .buttons {
 }
 
 #register {
-  --mdc-theme-primary: blue;
+  --mdc-theme-primary: #edba00 !important;
 }
 
 #uvpa_available div {

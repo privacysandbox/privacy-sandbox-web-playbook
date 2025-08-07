@@ -60,8 +60,8 @@ RP_URL=https://fedcm-rp-demo.local
 
 ### 4. Run the demos
 Now make sure that the demos run on the right ports specified in the `/privacy-sandbox-web-playbook/fedcm/caddy/Caddyfile`. You can also modify thoe as needed, but the default is:
-* IdP: 8080
-* RP: 8081
+* RP: 8080
+* IdP: 8081
 
 ## Hosted instance
 
@@ -150,9 +150,9 @@ npm run start
 
 To experience the FedCM flow, you must have both this **IdP server** and the **RP server** running simultaneously.
 
-1.  **Start Both Servers:** Ensure you have started the server for this IdP demo (on port `8080`) and the RP demo (on port `8081`).
-2.  **Create an Account on the IdP:** Open your browser and navigate to the IdP website at `http://localhost:8080`. Create a demo account (e.g., `demo@example.com`).
-3.  **Navigate to the RP Website:** In a new tab, go to the RP's website at `http://localhost:8081`.
+1.  **Start Both Servers:** Ensure you have started the server for this RP demo (on port `8080`) and the IdP demo (on port `8081`).
+2.  **Create an Account on the IdP:** Open your browser and navigate to the IdP website at `http://localhost:8081`. Create a demo account (e.g., `demo@example.com`).
+3.  **Navigate to the RP Website:** In a new tab, go to the RP's website at `http://localhost:8080`.
 4.  **Initiate Sign-In:** On the RP page, click the button that says **"Sign in with a Demo IdP"**.
 5.  **Browser UI Prompt:** This action triggers the FedCM API. Because you have an active session with the IdP, the browser will display its native UI, asking for your consent to sign in to the "RP Demo" using your IdP account.
 6.  **Complete Sign-In:** Click "Continue". The browser securely mediates the token exchange between this IdP and the RP. The RP page will update to show you are logged in.

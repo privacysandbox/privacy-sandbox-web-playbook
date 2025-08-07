@@ -43,8 +43,10 @@ Add the following entries to your system's hosts file. This maps the mock domain
 A Caddy configuration file (`caddy/Caddyfile`) and a startup script (`mock-cross-site-env.sh` or `.bat`) are provided in the `fedcm/` directory of this monorepo.
 
 The `Caddyfile` is configured to proxy requests to the correct local ports:
-*   `https://fedcm-idp-demo.local` -> `localhost:8080` (for `fedcm-idp-demo`)
-*   `https://fedcm-rp-demo.local` -> `localhost:8081` (for `fedcm-rp-demo`)
+*   `https://fedcm-rp-demo.local` -> `localhost:8080` (for `fedcm-idp-demo`)
+*   `https://fedcm-idp-demo.local` -> `localhost:8081` (for `fedcm-idp-demo`)
+*   `https://fedcm-idp-2-demo.local` -> `localhost:8082` (for `fedcm-idp-2-demo`)
+
 
 This script will start Caddy, which automatically handles HTTPS certificate generation and trust for the mock domains. The first time you run it, Caddy will ask for your system password to install a local certificate authority.
 
@@ -62,7 +64,7 @@ Keep the terminal window where Caddy is running open.
 With Caddy running, you can now start the individual demo servers. Each demo directory (e.g., `fedcm-rp-demo`, `fedcm-idp-demo`) contains its own `README.md` with specific instructions for installing dependencies, configuring environment variables, and running the server.
 
 Make sure the demos run on the correct ports as specified in the `caddy/Caddyfile`:
-*   **IdP Demo (`fedcm-idp-demo`)**: Port `8080`
-*   **RP Demo (`fedcm-rp-demo`)**: Port `8081`
+*   **RP Demo (`fedcm-rp-demo`)**: Port `8080`
+*   **IdP Demo (`fedcm-idp-demo`)**: Port `8081`
 
 Follow the instructions in each project's `README.md` to get started.

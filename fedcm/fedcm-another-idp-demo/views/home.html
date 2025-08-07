@@ -18,8 +18,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>FedCM IDP Demo</title>
-    <meta name="description" content="FedCM IDP Demo">
+    <title>FedCM IDP-2 Demo</title>
+    <meta name="description" content="FedCM IDP-2 Demo">
     <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -34,29 +34,30 @@
   </head>
   <body class="mdc-typography">
     <mwc-top-app-bar-fixed>
-      <span slot="title">FedCM IDP Demo</span>
+      <span slot="title">FedCM IDP-2 Demo</span>
     </mwc-top-app-bar-fixed>
 
     <main class="content center">
       <h2>
         Welcome, {{username}}!
       </h2>
-       <p>These are the RPs that are currently relying on this account:</p>
+<!--       <p class="instructions">The session expires in 3 minutes!</p> -->
+      <p>These are the RPs that are currently relying on this account:</p>
         [
-          {{#if approved_clients.length}}
-            {{#each approved_clients}}
-              {{#if @first}}
-                {{this}}
-              {{else}}
-                ,
-                {{this}}
-              {{/if}}
-            {{/each}}
-          {{else}}
+            {{#if approved_clients.length}}
+              {{#each approved_clients}}
+                {{#if @first}}
+                  {{this}}
+                {{else}}
+                  ,
+                  {{this}}
+                {{/if}}
+              {{/each}}
+            {{else}}
 
-          {{/if}}
-        ]
-      <form id="form" action="/auth/account" method="post" class="center">
+            {{/if}}
+          ]
+      <form id="form" action='auth/account' method="post" class="center">
         <div class="buttons center">
           <mwc-select
            label="Account status"
@@ -100,7 +101,7 @@
             size="50"
             value="{{picture}}"
             {{#if demo_account}}disabled{{/if}}
-            required>
+            required >
           </mwc-textfield>
           <img src="{{picture}}" class="picture">
         </div>
@@ -125,7 +126,18 @@
         .then(user => {
           toast('Your personal info is successfully updated.');
           setTimeout(() => {
-            location.href = '/home';            
+              // Get the current URL's query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Extract the 'back' parameter
+            const backParam = urlParams.get('back');
+            
+            // Construct the redirect URL with the 'back' parameter
+            let redirectUrl = '/home' + (backParam && backParam !== 'null' && backParam !== 'undefined' ? 
+                                         `?back=${backParam}` : '' );
+            
+            console.log(redirectUrl)
+
+            location.href = redirectUrl;           
           }, 2000);
         })
         .catch(e => toast(e));

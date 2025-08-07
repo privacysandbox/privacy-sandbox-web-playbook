@@ -46,6 +46,7 @@ app.use(
 );
 
 const IDP_ORIGIN = process.env.IDP1_URL;
+const IDP2_ORIGIN = process.env.IDP2_URL;
 const CLIENT_ID = process.env.RP_URL;
 
 app.use((req, res, next) => {
@@ -67,17 +68,23 @@ app.use((req, res, next) => {
 });
 
 app.post("/verify", csrfCheck, (req, res) => {
-  const raw_token = req.body.token;
+  const { token: raw_token, multi_idp } = req.body;
 
   try {
     const nonce = req.session.nonce.toString();
 
+    // Determine the valid issuer(s) for the token.
+    let validIssuers = [IDP_ORIGIN];
+    if (multi_idp) {
+      validIssuers.push(IDP2_ORIGIN);
+    }
+
     const token = jwt.verify(raw_token, "xxxxx", {
-      issuer: IDP_ORIGIN,
+      issuer: validIssuers,
       nonce,
       audience: CLIENT_ID,
     });
-
+    
     const user = getUser(token.sub, token.email, token.name, token.picture);
 
     req.session.user_id = user.user_id;
@@ -112,8 +119,30 @@ app.get("/", (req, res) => {
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("index.html", { nonce, client_id, idp_origin });
+  res.render("index.html", 
+    // TODO: wrap the IdP origin to config file
+    { nonce,
+      client_id,
+      idp_origin
+    });
 });
+
+app.get("/multi-idp", (req, res) => {
+  const nonce = Math.floor(Math.random() * 10e10);
+  req.session.nonce = nonce;
+  const client_id = CLIENT_ID;
+  const idp_origin = IDP_ORIGIN;
+  const idp2_origin = IDP2_ORIGIN;
+  res.render("index.html", {
+    // TODO: wrap the IdP origin to config file
+    nonce,
+    client_id,
+    idp_origin,
+    idp2_origin,
+    multi_idp: true,
+  });
+});
+
 
 app.get("/button_flow", (req, res) => {
   const nonce = Math.floor(Math.random() * 10e10);
@@ -159,7 +188,7 @@ app.get("/button", (req, res) => {
   res.render("button.html", { nonce, client_id, idp_origin });
 });
 
-const port = process.env.GLITCH_DEBUGGER ? null : 8081;
+const port = 8080;
 const listener = app.listen(port || process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

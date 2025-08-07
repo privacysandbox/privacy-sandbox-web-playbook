@@ -19,13 +19,37 @@
     local_certs
 }
 
-# Identity Provider (IdP) Demo
+# Relying Party (RP) Demo
+fedcm-rp-demo.local {
+    # Default document root.
+    root * /usr/share/caddy
+
+    # Reverse proxy to the RP app running on localhost:8080.
+    reverse_proxy http://localhost:8080 {
+        # Preserve original Host header.
+        header_up Host {host}
+        # Pass client IP.
+        header_up X-Real-IP {remote_host}
+        # Append client IP to X-Forwarded-For.
+        header_up X-Forwarded-For {proxy_add_x_forwarded_for}
+        # Indicate original protocol was HTTPS.
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Log requests to stdout in JSON format.
+    log {
+        output stdout
+        format json
+    }
+}
+
+# Identity Provider 1 (IdP-1) Demo
 fedcm-idp-demo.local {
     # Default document root
     root * /usr/share/caddy
 
-    # Reverse proxy to the IdP app running on localhost:8080.
-    reverse_proxy http://localhost:8080 {
+    # Reverse proxy to the IdP app running on localhost:8081.
+    reverse_proxy http://localhost:8081 {
         # Preserve original Host header.
         header_up Host {host}
         # Pass client IP.
@@ -43,19 +67,19 @@ fedcm-idp-demo.local {
     }
 }
 
-# Relying Party (RP) Demo
-fedcm-rp-demo.local {
-    # Default document root.
+# Identity Provider 2 (IdP-2) Demo
+fedcm-idp-2-demo.local {
+    # Default document root
     root * /usr/share/caddy
 
-    # Reverse proxy to the RP app running on localhost:8081.
-    reverse_proxy http://localhost:8081 {
+    # Reverse proxy to the IdP app running on localhost:8082.
+    reverse_proxy http://localhost:8082 {
         # Preserve original Host header.
         header_up Host {host}
         # Pass client IP.
         header_up X-Real-IP {remote_host}
         # Append client IP to X-Forwarded-For.
-        header_up X-Forwarded-For {proxy_add_x_forwarded_for}
+        header_up X-Forwarded-For {remote_host}
         # Indicate original protocol was HTTPS.
         header_up X-Forwarded-Proto {scheme}
     }

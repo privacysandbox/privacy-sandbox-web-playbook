@@ -17,22 +17,21 @@
  *
  * NOTE: This is not an officially supported Google product
  */
-const IDP_ORIGIN = 'https://fedcm-another-idp-demo.glitch.me';
-const IDP_CONFIG = `${IDP_ORIGIN}/fedcm.json`;
+const IDP_CONFIG = "{{idp_origin}}/fedcm.json";
 
 const $ = document.querySelector.bind(document);
 
-const _fetch = async (path, payload = '') => {
+const _fetch = async (path, payload = "") => {
   const headers = {
-    'X-Requested-With': 'XMLHttpRequest',
+    "X-Requested-With": "XMLHttpRequest",
   };
   if (payload && !(payload instanceof FormData)) {
-    headers['Content-Type'] = 'application/json';
+    headers["Content-Type"] = "application/json";
     payload = JSON.stringify(payload);
   }
   const res = await fetch(path, {
-    method: 'POST',
-    credentials: 'same-origin',
+    method: "POST",
+    credentials: "same-origin",
     headers: headers,
     body: payload,
   });
@@ -47,14 +46,15 @@ const _fetch = async (path, payload = '') => {
 };
 
 export class IdentityProvider {
-
   constructor(options) {
-    const { configURL, clientId = '' } = options;
-    if (clientId === '') {
-      clientId = document.querySelector('meta[name="fedcm_demo_client_id"]')?.content
+    const { configURL, clientId = "" } = options;
+    if (clientId === "") {
+      clientId = document.querySelector(
+        'meta[name="fedcm_demo_client_id"]'
+      )?.content;
     }
-    if (clientId === '') {
-      throw new Error('client ID is not declared.');
+    if (clientId === "") {
+      throw new Error("client ID is not declared.");
     }
     const url = new URL(configURL);
     this.origin = url.origin;
@@ -64,38 +64,50 @@ export class IdentityProvider {
 
   async signIn(options = {}) {
     let {
-      mode = 'passive',
+      mode = "passive",
       loginHint,
+      domainHint,
       context,
       nonce,
       fields,
       mediation,
-      params = {}
+      params = {},
     } = options;
     if (!nonce) {
       nonce = document.querySelector('meta[name="nonce"]')?.content;
     }
     if (!nonce || !this.clientId) {
-      throw new Error('nonce or client_id is not declared.');
+      throw new Error("nonce or client_id is not declared.");
     }
 
-    const credential = await navigator.credentials.get({
-      identity: {
-        providers: [{
-          configURL: this.configURL,
-          clientId: this.clientId,
-          nonce,
-          loginHint,
-          fields,
-          params,
-        }],
-        mode,
-        context,
-      },
-      mediation,
-    }).catch(e => {
-      throw new Error(e.message);
-    });
+    console.log("DEBUGGING: ", options);
+
+    const credential = await navigator.credentials
+      .get({
+        identity: {
+          providers: [
+            {
+              configURL: this.configURL,
+              clientId: this.clientId,
+              nonce,
+              loginHint,
+              domainHint,
+              fields,
+              params,
+            },
+          ],
+          mode,
+          context,
+        },
+        mediation,
+      })
+      .catch((e) => {
+        console.log("this.configURL: ", this.configURL);
+        console.log("this.clientId: ", this.clientId);
+
+        console.log(e);
+        throw e;
+      });
     const token = credential.token;
     return token;
   }
@@ -108,13 +120,13 @@ export class IdentityProvider {
     const dom = document.querySelector(`#${domId}`);
     if (!dom) throw new Error("Specified DOM ID doesn't exit");
 
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('allow', 'identity-credentials-get');
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("allow", "identity-credentials-get");
     iframe.src = `${this.origin}/iframe`;
     dom.appendChild(iframe);
 
-    window.addEventListener('message', async e => {
-      if (e.origin === this.origin && e.data === 'sign-in') {
+    window.addEventListener("message", async (e) => {
+      if (e.origin === this.origin && e.data === "sign-in") {
         await callback();
       }
     });
@@ -135,21 +147,22 @@ export class IdentityProvider {
       return await IdentityCredential.disconnect({
         configURL: this.configURL,
         clientId: this.clientId,
-        accountHint: accountId
-      });      
+        accountHint: accountId,
+      });
     } catch (e) {
-      throw new Error('Failed disconnecting with the error: ', e.message);
+      throw new Error("Failed disconnecting with the error: ", e.message);
     }
   }
-};
+}
 
-const tokenElement = document.createElement('meta');
-tokenElement.httpEquiv = 'origin-trial';
-tokenElement.content = 'A5tatBEy10rzsrEIWXtOBhIjSv8kJk827zp9/UU0wB9a70PpIH2WDUvDtDcdir3PVnVEwsRQtc/zFYYmuqYn2wQAAAB1eyJvcmlnaW4iOiJodHRwczovL2ZlZGNtLWlkcC1kZW1vLmdsaXRjaC5tZTo0NDMiLCJmZWF0dXJlIjoiRmVkQ21CdXR0b25Nb2RlIiwiZXhwaXJ5IjoxNzI3ODI3MTk5LCJpc1RoaXJkUGFydHkiOnRydWV9';
+const tokenElement = document.createElement("meta");
+tokenElement.httpEquiv = "origin-trial";
+tokenElement.content =
+  "A5tatBEy10rzsrEIWXtOBhIjSv8kJk827zp9/UU0wB9a70PpIH2WDUvDtDcdir3PVnVEwsRQtc/zFYYmuqYn2wQAAAB1eyJvcmlnaW4iOiJodHRwczovL2ZlZGNtLWlkcC1kZW1vLmdsaXRjaC5tZTo0NDMiLCJmZWF0dXJlIjoiRmVkQ21CdXR0b25Nb2RlIiwiZXhwaXJ5IjoxNzI3ODI3MTk5LCJpc1RoaXJkUGFydHkiOnRydWV9";
 document.head.appendChild(tokenElement);
 
-const tokenElement2 = document.createElement('meta');
-tokenElement2.httpEquiv = 'origin-trial';
-tokenElement2.content = 'A6pTt1tzQq9g5FYMWlaXJphgJ2UN8nbLX10mJZg41c7nwvAVs8s7eLjxnkbbsyrdkA07pE1iJt8tdNyq2uXJCQEAAAB7eyJvcmlnaW4iOiJodHRwczovL2ZlZGNtLWlkcC1kZW1vLmdsaXRjaC5tZTo0NDMiLCJmZWF0dXJlIjoiRmVkQ21Db250aW51ZU9uQnVuZGxlIiwiZXhwaXJ5IjoxNzMzMjcwMzk5LCJpc1RoaXJkUGFydHkiOnRydWV9';
+const tokenElement2 = document.createElement("meta");
+tokenElement2.httpEquiv = "origin-trial";
+tokenElement2.content =
+  "A6pTt1tzQq9g5FYMWlaXJphgJ2UN8nbLX10mJZg41c7nwvAVs8s7eLjxnkbbsyrdkA07pE1iJt8tdNyq2uXJCQEAAAB7eyJvcmlnaW4iOiJodHRwczovL2ZlZGNtLWlkcC1kZW1vLmdsaXRjaC5tZTo0NDMiLCJmZWF0dXJlIjoiRmVkQ21Db250aW51ZU9uQnVuZGxlIiwiZXhwaXJ5IjoxNzMzMjcwMzk5LCJpc1RoaXJkUGFydHkiOnRydWV9";
 document.head.appendChild(tokenElement2);
-

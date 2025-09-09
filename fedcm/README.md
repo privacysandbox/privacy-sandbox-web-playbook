@@ -18,53 +18,57 @@ This directory contains the following demo projects:
 
 *   **`fedcm-multi-idp-rp/`**: A demo **Relying Party (RP)** specifically configured to work with multiple IdPs (`fedcm-idp-demo` and `fedcm-another-idp-demo`). It demonstrates how an RP can present the user with a choice of identity providers.
 
-## Setting up a mock cross-site environment
+## Running the Demos
 
-For the FedCM flow to work correctly and to accurately simulate a real-world scenario, your browser needs to perceive the Identity Provider (IdP) and Relying Party (RP) as **separate, secure domains**.
+This project is configured to run the three main demos (`fedcm-rp-demo`, `fedcm-idp-demo`, and `fedcm-another-idp-demo`) concurrently with a single command. This setup uses **Caddy** as a reverse proxy to accurately simulate a real-world, cross-site environment with HTTPS.
 
-This section explains how to use **Caddy** to set up a local reverse proxy that serves your demos on mock domains with HTTPS. This ensures your browser treats them as cross-site, allowing you to test FedCM in an appropriate context.
+### Prerequisites
 
-### 1. Update Your Hosts File
+1.  **Node.js and npm**: Ensure you have Node.js (v18+) and npm installed.
+2.  **Available Ports**: The demo servers require ports `8080`, `8081`, and `8082` to be free. You can check for running processes on these ports with the following commands:
+       
+        lsof -i :8080 -i :8081 -i :8082
 
-This step requires **administrator/root privileges**.
-
-Add the following entries to your system's hosts file. This maps the mock domains to your local machine (`127.0.0.1`), allowing your browser to find them.
-
-*   **Windows:** `C:\Windows\System32\drivers\etc\hosts`
-*   **macOS/Linux:** `/etc/hosts`
-
-```
-127.0.0.1       fedcm-idp-demo.local
-127.0.0.1       fedcm-rp-demo.local
-```
-
-### 2. Start the Caddy Proxy
-
-A Caddy configuration file (`caddy/Caddyfile`) and a startup script (`mock-cross-site-env.sh` or `.bat`) are provided in the `fedcm/` directory of this monorepo.
-
-The `Caddyfile` is configured to proxy requests to the correct local ports:
-*   `https://fedcm-rp-demo.local` -> `localhost:8080` (for `fedcm-idp-demo`)
-*   `https://fedcm-idp-demo.local` -> `localhost:8081` (for `fedcm-idp-demo`)
-*   `https://fedcm-idp-2-demo.local` -> `localhost:8082` (for `fedcm-idp-2-demo`)
+    If any of these commands show output, you will need to stop the process using that port before proceeding.
 
 
-This script will start Caddy, which automatically handles HTTPS certificate generation and trust for the mock domains. The first time you run it, Caddy will ask for your system password to install a local certificate authority.
+### 2. Install and Run the Environment
 
-From this `fedcm` directory, run the script:
+Navigate to this `fedcm/` directory and run the following commands:
 
 ```bash
-chmod +x mock-cross-site-env.sh # Only needed once
-./mock-cross-site-env.sh
+# Install root dependencies and dependencies for all sub-projects
+npm install
 ```
 
-Keep the terminal window where Caddy is running open.
+```bash
+# Start all demo projects and the Caddy proxy
+npm start
+```
 
-### 3. Run the Demos
+#### What `npm start` Does
 
-With Caddy running, you can now start the individual demo servers. Each demo directory (e.g., `fedcm-rp-demo`, `fedcm-idp-demo`) contains its own `README.md` with specific instructions for installing dependencies, configuring environment variables, and running the server.
+The `npm start` command triggers the entire environment setup:
 
-Make sure the demos run on the correct ports as specified in the `caddy/Caddyfile`:
-*   **RP Demo (`fedcm-rp-demo`)**: Port `8080`
-*   **IdP Demo (`fedcm-idp-demo`)**: Port `8081`
+1.  **Starts Demo Servers**: It starts the servers for the three core projects:
+    *   `fedcm-rp-demo` on port `8080`
+    *   `fedcm-idp-demo` on port `8081`
+    *   `fedcm-another-idp-demo` on port `8082`
 
-Follow the instructions in each project's `README.md` to get started.
+    Their logs will appear in your terminal with color-coded prefixes like `[RP]`, `[IDP]`, and `[IDP-2]`.
+
+2.  **Waits for Servers**: It waits until all three demo servers are up and running before proceeding.
+
+3.  **Starts Caddy Proxy**: Once the servers are ready, it launches the Caddy reverse proxy. The proxy provides the secure HTTPS layer and maps the running demo servers to the `.local` domains you configured in your hosts file:
+    *   `https://fedcm-rp-demo.localhost` → `localhost:8080`
+    *   `https://fedcm-idp-demo.localhost` → `localhost:8081`
+    *   `https://fedcm-another-idp-demo.localhost` → `localhost:8082`
+
+    The first time it runs, it may ask for your system password to install the certificates. Caddy's logs are saved to a `caddy.log` file in this directory.
+
+### Access the Demos in Your Browser
+
+With the environment running, you can now test the FedCM flow:
+   *   [https://fedcm-rp-demo.localhost](https://fedcm-rp-demo.localhost) - Relying Party (RP)
+   *   [https://fedcm-idp-demo.localhost](https://fedcm-idp-demo.localhost) - Identity Provider (IdP)
+   *   [https://fedcm-another-idp-demo.localhost](https://fedcm-another-idp-demo.localhost) - Another Identity Provider (IdP)

@@ -32,6 +32,19 @@ This project is configured to run the three main demos (`fedcm-rp-demo`, `fedcm-
     If any of these commands show output, you will need to stop the process using that port before proceeding.
 
 
+### 1. Configure Environment Variables
+
+Each demo project needs to know the URLs of the other projects. You must create a `.env` file in each of the three demo directories with the content specified below.
+
+#### In **`fedcm/`**, create a `.env` file:
+
+```
+    IDP1_URL=https://fedcm-idp-demo.localhost
+    IDP2_URL=https://fedcm-another-idp-demo.localhost
+    RP_URL=https://fedcm-rp-demo.localhost
+    PROVIDER_URLS=["https://fedcm-idp-demo.localhost", "https://fedcm-another-idp-demo.localhost"]
+```
+
 ### 2. Install and Run the Environment
 
 Navigate to this `fedcm/` directory and run the following commands:

@@ -47,7 +47,7 @@ router.use(
 const RP_NAME = "WebAuthn Codelab";
 const TIMEOUT = 30 * 1000 * 60; // 30 minutes
 const IDTOKEN_LIFETIME = 1000 * 60 * 60 * 24; // 24 hours
-const ORIGIN = process.env.IDP_URL;
+const ORIGIN = process.env.IDP1_URL;
 const RP_CLIENT_ID = process.env.RP_URL;
 const RP_ORIGIN = process.env.RP_URL;
 const RP_MULTI_IDP_CLIENT_ID = "https://fedcm-multi-idp-rp.glitch.me";

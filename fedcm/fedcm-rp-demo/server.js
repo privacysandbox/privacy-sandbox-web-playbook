@@ -156,13 +156,13 @@ app.get("/alternative-fields", (req, res) => {
 
 
 
-app.get("/button_flow", (req, res) => {
+app.get("/active-mode", (req, res) => {
   const nonce = Math.floor(Math.random() * 10e10);
   // TODO: Shouldn't I timeout this?
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("button_flow.html", { nonce, client_id, idp_origin });
+  res.render("active-mode.html", { nonce, client_id, idp_origin });
 });
 
 app.get("/authorization", (req, res) => {

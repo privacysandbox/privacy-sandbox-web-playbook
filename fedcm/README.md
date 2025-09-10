@@ -85,3 +85,18 @@ With the environment running, you can now test the FedCM flow:
    *   [https://fedcm-rp-demo.localhost](https://fedcm-rp-demo.localhost) - Relying Party (RP)
    *   [https://fedcm-idp-demo.localhost](https://fedcm-idp-demo.localhost) - Identity Provider (IdP)
    *   [https://fedcm-another-idp-demo.localhost](https://fedcm-another-idp-demo.localhost) - Another Identity Provider (IdP)
+
+
+## FedCM Feature Demos
+
+This project demonstrates various features of the **Federated Credential Management (FedCM) API**. 
+
+| Feature | Demo Page | Documentation |
+| :--- | :--- | :--- |
+| **Passive Mode**  | [`https://fedcm-rp-demo.localhost/`](https://fedcm-rp-demo.localhost/) | [FedCM Auto-reauthentication](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
+| **Active Mode** | [`https://fedcm-rp-demo.localhost/active-mode`](https://fedcm-rp-demo.localhost/active-mode) | [FedCM Sign-in Flow](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
+| **Multiple IdPs** | [`https://fedcm-rp-demo.localhost/multi-idp`](https://fedcm-rp-demo.localhost/multi-idp) | [FedCM Developer Guide](https://privacysandbox.google.com/cookies/fedcm/implement/identity-provider) |
+| **Domain Hint**  | [`https://fedcm-rp-demo.localhost/domain-hint`](https://fedcm-rp-demo.localhost/domain-hint) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
+| **Domain Hint in Passive Mode** | [`https://fedcm-rp-demo.localhost/domain-hint-passive`](https://fedcm-rp-demo.localhost/domain-hint-passive) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
+| **Custom Fields**  | [`https://fedcm-rp-demo.localhost/alternative-fields`](https://fedcm-rp-demo.localhost/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
+

@@ -1,0 +1,22 @@
+{
+  "name": "fedcm-demos",
+  "version": "1.0.0",
+  "description": "A package to manage all FedCM demos.",
+  "private": true,
+"scripts": {
+    "postinstall": "npm --prefix ./fedcm-rp-demo install && npm --prefix ./fedcm-idp-demo install && npm --prefix ./fedcm-another-idp-demo install",
+    "start": "concurrently --names \"RP,IDP,IDP-2,CADDY\" -c \"auto\" \"npm:start:rp\" \"npm:start:idp\" \"npm:start:another-idp\" \"npm:caddy:wait-and-run\"",
+    "caddy:wait-and-run": "wait-on tcp:8080 tcp:8081 tcp:8082 && npm run caddy:run",
+    "caddy:run": "bash ./mock-cross-site-env.sh",
+    "start:rp": "dotenv -- npm --prefix ./fedcm-rp-demo start",
+    "start:idp": "dotenv -- npm --prefix ./fedcm-idp-demo start",
+    "start:another-idp": "dotenv -- npm --prefix ./fedcm-another-idp-demo start",
+    "start:multi-idp-rp": "npm --prefix ./fedcm-multi-idp-rp start"
+  },
+  "devDependencies": {
+    "@radically-straightforward/caddy": "^2.0.6",
+    "concurrently": "^9.2.1",
+    "wait-on": "^8.0.4",
+    "dotenv-cli": "^10.0.0"
+  }
+}

@@ -1,5 +1,3 @@
-# !/bin/bash
-
 #  Copyright 2025 Google Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +14,34 @@
 #
 #  NOTE: This is not an officially supported Google product
 
-LOG_FILE="caddy.log"
+{
+    # Automatically generate and trust local HTTPS certificates.
+    local_certs
+}
 
+# Relying Party (RP) Demo
+fedcm-rp-demo.localhost {
+    reverse_proxy localhost:8080
+    log {
+        output stdout
+        format json
+    }
+}
 
-echo "Attempting to stop any running Caddy instances..."
-npx caddy stop > /dev/null 2>&1 || sudo killall caddy > /dev/null 2>&1 || true
+# Identity Provider 1 (IdP-1) Demo
+fedcm-idp-demo.localhost {
+    reverse_proxy localhost:8081
+    log {
+        output stdout
+        format json
+    }
+}
 
-printf "Starting Caddy local cross-site environment proxy. Logs will appear in \e]8;;file://$PWD/caddy.log\acaddy.log\e]8;;\a\n"
-
-( 
-    npx caddy run --config Caddyfile > "${LOG_FILE}" 2>&1
-) || {
-  # This code runs ONLY if the Caddy process exits with a non-zero status (an error).
-  echo "Caddy process failed. See ${LOG_FILE} for details." >&2
-  exit 1 # Ensure the script exits with a failure code
+# Identity Provider 2 (Another IdP) Demo
+fedcm-another-idp-demo.localhost {
+    reverse_proxy localhost:8082
+    log {
+        output stdout
+        format json
+    }
 }

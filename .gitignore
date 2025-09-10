@@ -12,3 +12,6 @@ dist
 .idea
 .DS_Store
 venv/
+/fedcm/caddy.log
+/fedcm/node_modules
+/fedcm/.env

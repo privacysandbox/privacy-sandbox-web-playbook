@@ -203,7 +203,7 @@ app.get("/reauth", (req, res) => {
 app.get("/.well-known/web-identity", (req, res) => {
   console.log("/.well-known/web-identity");
   return res.json({
-    provider_urls: [`${process.env.IDP_URL}/fedcm.json`],
+    provider_urls: [`${process.env.IDP1_URL}/fedcm.json`],
   });
 });
 
@@ -242,7 +242,7 @@ app.get("/fedcm.js", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Set-cookie", "test");
   return res.sendFile(path.join(__dirname, "public", "fedcm.js"), {
-    idp_origin: process.env.IDP_URL,
+    idp_origin: process.env.IDP1_URL,
   });
 });
 
@@ -251,7 +251,7 @@ app.get("/client.js", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Set-cookie", "test");
   return res.sendFile(path.join(__dirname, "public", "client.js"), {
-    idp_origin: process.env.IDP_URL,
+    idp_origin: process.env.IDP1_URL,
     rp_origin: process.env.RP_URL,
   });
 });
@@ -260,7 +260,7 @@ app.get("/client-metadata-static.json", (req, res) => {
   console.log("loading /client-metadata-static.json...");
 
   return res.json({
-    terms_of_service_url: `${process.env.IDP_URL}/terms_of_service.html`,
+    terms_of_service_url: `${process.env.IDP1_URL}/terms_of_service.html`,
     brand_icon_url:
       "https://cdn.glitch.global/32bb3785-b985-4733-a2b1-2dfc919d2250/shrine.png?v=1721700610752",
     client_matches_top_frame_origin: true,

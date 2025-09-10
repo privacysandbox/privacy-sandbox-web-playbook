@@ -26,15 +26,15 @@ Add the following entries to your system's hosts file. This maps the mock domain
 * **macOS/Linux:** `/etc/hosts`
 
 ```
-127.0.0.1       fedcm-idp-demo.local
-127.0.0.1       fedcm-rp-demo.local
+127.0.0.1       fedcm-idp-demo.localhost
+127.0.0.1       fedcm-rp-demo.localhost
 ```
 
 ### 2. Start the Caddy Proxy
 
 A Caddy configuration file (`caddy/Caddyfile`) and a startup script (`mock-cross-site-env.sh` or `.bat`) are provided in the `fedcm/` directory of this monorepo.
 
-This script will start Caddy, which automatically handles HTTPS certificate generation and trust for `fedcm-idp-demo.local` and `fedcm-rp-demo.local`. The first time you run it, Caddy will ask for your system password to install a local certificate authority (CA) into your browser's trust store.
+This script will start Caddy, which automatically handles HTTPS certificate generation and trust for `fedcm-idp-demo.localhost` and `fedcm-rp-demo.localhost`. The first time you run it, Caddy will ask for your system password to install a local certificate authority (CA) into your browser's trust store.
 
 Navigate to the `fedcm` directory and run the script:
 
@@ -54,9 +54,9 @@ Create a new file in the current fedcm/fedcm-rp-demo file named .env.
 Add the following variables to the .env file, replacing the example URLs with your actual IdP and RP URLs with the mock domains you just set up:
 
 ```
-PROVIDER_URLS=["https://fedcm-idp-demo.local"]
-RP_URL=https://fedcm-rp-demo.local
-IDP_URL=https://fedcm-idp-demo.local
+PROVIDER_URLS=["https://fedcm-idp-demo.localhost"]
+RP_URL=https://fedcm-rp-demo.localhost
+IDP1_URL=https://fedcm-idp-demo.localhost
 ```
 
 ### 4. Run the demos

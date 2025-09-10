@@ -120,7 +120,6 @@ app.get("/", (req, res) => {
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
   res.render("index.html", 
-    // TODO: wrap the IdP origin to config file
     { nonce,
       client_id,
       idp_origin
@@ -134,7 +133,6 @@ app.get("/multi-idp", (req, res) => {
   const idp_origin = IDP_ORIGIN;
   const idp2_origin = IDP2_ORIGIN;
   res.render("index.html", {
-    // TODO: wrap the IdP origin to config file
     nonce,
     client_id,
     idp_origin,
@@ -142,6 +140,20 @@ app.get("/multi-idp", (req, res) => {
     multi_idp: true,
   });
 });
+
+app.get("/alternative-fields", (req, res) => {
+  const nonce = Math.floor(Math.random() * 10e10);
+  req.session.nonce = nonce;
+  const client_id = CLIENT_ID;
+  const idp_origin = IDP_ORIGIN;
+  res.render("alternative-fields.html", {
+    // TODO: wrap the IdP origin to config file
+    nonce,
+    client_id,
+    idp_origin
+  });
+});
+
 
 
 app.get("/button_flow", (req, res) => {

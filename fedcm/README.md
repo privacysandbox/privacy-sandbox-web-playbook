@@ -79,12 +79,19 @@ The `npm start` command triggers the entire environment setup:
 
     The first time it runs, it may ask for your system password to install the certificates. Caddy's logs are saved to a `caddy.log` file in this directory.
 
-### Access the Demos in Your Browser
+### Access the locally running Demos 
 
 With the environment running, you can now test the FedCM flow:
    *   [https://fedcm-rp-demo.localhost](https://fedcm-rp-demo.localhost) - Relying Party (RP)
    *   [https://fedcm-idp-demo.localhost](https://fedcm-idp-demo.localhost) - Identity Provider (IdP)
    *   [https://fedcm-another-idp-demo.localhost](https://fedcm-another-idp-demo.localhost) - Another Identity Provider (IdP)
+
+## Try out the deployed demos 
+
+With the environment running, you can now test the FedCM flow:
+   * [https://fedcm-demo-rp.dev](https://fedcm-demo-rp.dev)
+   * [https://fedcm-demo-idp.dev](https://fedcm-demo-idp.dev)
+   * [https://fedcm-demo-idp-2.dev](https://fedcm-demo-idp.dev)
 
 
 ## FedCM Feature Demos

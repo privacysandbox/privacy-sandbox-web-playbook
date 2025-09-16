@@ -14,22 +14,29 @@
 #
 #  NOTE: This is not an officially supported Google product
 
-# Use the official Node.js runtime as a parent image
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install app dependencies
 RUN npm install
 
-# Copy the app source code
 COPY . .
 
-# Expose the port the app runs on
+RUN npm run build
+
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
+COPY ./src ./src
+
 EXPOSE 8081
-# Define the command to run the app
+
 CMD [ "npm", "start" ]

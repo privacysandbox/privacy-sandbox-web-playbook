@@ -18,15 +18,15 @@ steps:
   # Step 1: Build all three container images in parallel
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Build RP Image'
-    args: ['builds', 'submit', './fedcm/fedcm-rp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-rp:$SHORT_SHA']
+    args: ['builds', 'submit', './fedcm/fedcm-rp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-rp${_ENV_SUFFIX}:$SHORT_SHA']
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Build IdP Image'
-    args: ['builds', 'submit', './fedcm/fedcm-idp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-idp:$SHORT_SHA']
+    args: ['builds', 'submit', './fedcm/fedcm-idp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-idp${_ENV_SUFFIX}:$SHORT_SHA']
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Build IdP-2 Image'
-    args: ['builds', 'submit', './fedcm/fedcm-another-idp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-idp-2:$SHORT_SHA']
+    args: ['builds', 'submit', './fedcm/fedcm-another-idp-demo', '--tag=gcr.io/$PROJECT_ID/fedcm-demo-idp-2${_ENV_SUFFIX}:$SHORT_SHA']
 
   # Step 2: Deploy all three services. This happens after all builds are complete.
   # We use the env.prod.yaml file you created, which should be in the fedcm/ directory.
@@ -36,10 +36,10 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'fedcm-demo-rp'
-      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-rp:$SHORT_SHA'
+      - 'fedcm-demo-rp${_ENV_SUFFIX}'
+      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-rp${_ENV_SUFFIX}:$SHORT_SHA'
       - '--region=us-central1'
-      - '--env-vars-file=./fedcm/env.prod.yaml' # Assumes your env file is in the fedcm folder
+      - '--env-vars-file=./fedcm/${_ENV_FILE_NAME}' # Assumes your env file is in the fedcm folder
       - '--quiet' # Prevents interactive prompts
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -48,10 +48,10 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'fedcm-demo-idp'
-      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-idp:$SHORT_SHA'
+      - 'fedcm-demo-idp${_ENV_SUFFIX}'
+      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-idp${_ENV_SUFFIX}:$SHORT_SHA'
       - '--region=us-central1'
-      - '--env-vars-file=./fedcm/env.prod.yaml'
+      - '--env-vars-file=./fedcm/${_ENV_FILE_NAME}'
       - '--quiet'
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -60,14 +60,14 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'fedcm-demo-idp-2' # Change this if your service name is different
-      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-idp-2:$SHORT_SHA'
+      - 'fedcm-demo-idp-2${_ENV_SUFFIX}' # Change this if your service name is different
+      - '--image=gcr.io/$PROJECT_ID/fedcm-demo-idp-2${_ENV_SUFFIX}:$SHORT_SHA'
       - '--region=us-central1'
-      - '--env-vars-file=./fedcm/env.prod.yaml'
+      - '--env-vars-file=./fedcm/${_ENV_FILE_NAME}'
       - '--quiet'
 
 # Specify which images to push to the registry upon successful build
 images:
-  - 'gcr.io/$PROJECT_ID/fedcm-demo-rp:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp-2:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/fedcm-demo-rp${_ENV_SUFFIX}:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp${_ENV_SUFFIX}:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp-2${_ENV_SUFFIX}:$SHORT_SHA'

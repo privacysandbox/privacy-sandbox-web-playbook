@@ -43,6 +43,7 @@ const IGNORE_CONFIG = {
       '.ignore.md',
       '.env',
       'env.yaml',
+     'env.staging.yaml',
       'env.prod.yaml'
     ],
    fullPaths: [

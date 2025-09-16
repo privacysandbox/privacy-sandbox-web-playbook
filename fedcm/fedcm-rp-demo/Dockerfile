@@ -70,6 +70,7 @@ COPY public ./public
 # Copy the server-side libraries
 COPY libs ./libs
 
+COPY .data ./.data
 
 # --- Final Configuration ---
 

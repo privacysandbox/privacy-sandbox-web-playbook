@@ -40,7 +40,10 @@ const IGNORE_CONFIG = {
       'requirements.txt',
       'shared-storage/shared-storage-wasm-demo/public/parsedown.js',
       '.gcloudignore',
-      '.ignore.md'
+      '.ignore.md',
+      '.env',
+      'env.yaml',
+      'env.prod.yaml'
     ],
    fullPaths: [
     'shared-storage/shared-storage-wasm-demo/public/parsedown.js'

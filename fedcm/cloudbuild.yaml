@@ -70,4 +70,4 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/fedcm-demo-rp:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/fedcm-demo-idp:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp-2:$SHORT_SHA'```
+  - 'gcr.io/$PROJECT_ID/fedcm-demo-idp-2:$SHORT_SHA'

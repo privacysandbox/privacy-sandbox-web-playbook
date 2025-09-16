@@ -14,29 +14,67 @@
 #
 #  NOTE: This is not an officially supported Google product
 
+# ---- Stage 1: The Builder ----
+# This stage installs all dependencies (including devDependencies)
+# and runs the webpack build to create the /dist folder.
 FROM node:20-alpine AS builder
 
+# Set the working directory inside the container
 WORKDIR /app
 
+# Copy package definition files
 COPY package*.json ./
+COPY shrinkwrap.yaml ./
+
+# Install all dependencies needed for the build
 RUN npm install
 
+# Copy the rest of the application source code
+# The .dockerignore file will prevent .env and node_modules from being copied
 COPY . .
 
+# Run the build script defined in package.json to create the /dist directory
 RUN npm run build
 
 
+# ---- Stage 2: The Runner ----
+# This is the final, lean production image that will be deployed.
+# It starts fresh and only copies the necessary files.
 FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy package definition files again
 COPY package*.json ./
+COPY shrinkwrap.yaml ./
+
+# Install ONLY the production dependencies, skipping devDependencies
 RUN npm install --omit=dev
 
+# --- Copy Artifacts from the Builder Stage ---
+
+# Copy the built frontend assets from the 'builder' stage
 COPY --from=builder /app/dist ./dist
 
-COPY ./src ./src
+# --- Copy Necessary Server Files ---
 
+# Copy the main server file
+COPY server.js .
+
+# Copy the server-side view templates
+COPY views ./views
+
+# Copy the public assets folder
+COPY public ./public
+
+# Copy the server-side libraries
+COPY libs ./libs
+
+
+# --- Final Configuration ---
+
+# Expose the port the server runs on
 EXPOSE 8081
 
+# The command to start the production server (executes 'npm start')
 CMD [ "npm", "start" ]

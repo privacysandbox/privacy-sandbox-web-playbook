@@ -75,7 +75,7 @@ COPY libs ./libs
 # --- Final Configuration ---
 
 # Expose the port the server runs on
-EXPOSE 8082
+EXPOSE 8080
 
 # The command to start the production server (executes 'npm start')
 CMD [ "npm", "start" ]

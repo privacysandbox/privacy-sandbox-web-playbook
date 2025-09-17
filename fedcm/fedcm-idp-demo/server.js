@@ -284,7 +284,8 @@ app.get("/clear-site-data", (req, res) => {
 });
 
 // listen for req :)
-const port = process.env.IDP1_PORT || 8081;
-const listener = app.listen(port || process.env.PORT, () => {
+const port = process.env.IDP1_PORT || 8080;
+const host = process.env.HOST || '0.0.0.0';
+const listener = app.listen(port, host, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

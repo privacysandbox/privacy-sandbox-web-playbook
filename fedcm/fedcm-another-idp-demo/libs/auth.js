@@ -285,13 +285,37 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
             "Account name cannot be empty. Return a `name` parameter in accounts endpoint",
         });
     }
+    try {
+      const existingUser = getUser(user.username);
+      const responseData = {
+      accounts: [
+        {
+          id: existingUser.id,
+          given_name: existingUser.given_name,
+          name: `${existingUser.given_name} ${existingUser.family_name}`,
+          email: existingUser.email,
+          username: existingUser.username,
+          tel: existingUser.tel,
+          picture: existingUser.picture,
+          // login_hints: [user.username],
+          approved_clients: existingUser.approved_clients,
+        },
+      ],
+    };
+      console.log("#$#$#$#$#$# DEBUG: ", responseData)
+      return res.json(responseData);
+    } catch (e) {
+      console.log("User not found: ", e);
+    }
     const responseData = {
       accounts: [
         {
           id: user.id,
           given_name: user.given_name,
           name: `${user.given_name} ${user.family_name}`,
-          email: user.username,
+          email: user.email,
+          username: user.username,
+          tel: user.tel,
           picture: user.picture,
           // login_hints: [user.username],
           approved_clients: user.approved_clients,

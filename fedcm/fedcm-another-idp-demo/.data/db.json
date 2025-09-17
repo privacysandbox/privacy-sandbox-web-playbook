@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "username": "demo@example.com",
+      "email": "elisa_beckett@example.com",
+      "id": "CD_xWHzeTxcBSrpgj0z5HRk2tnij-PNrBqYjV1sULaw",
+      "given_name": "Elisa",
+      "family_name": "Beckett",
+      "picture": "https://www.gravatar.com/avatar/7c4ff521986b4ff8d29440beec01972d",
+      "approved_clients": [
+        "http://localhost:8081",
+        "https://fedcm-rp-demo.localhost"
+      ],
+      "credentials": [],
+      "status": ""
+    }
+  ]
+}

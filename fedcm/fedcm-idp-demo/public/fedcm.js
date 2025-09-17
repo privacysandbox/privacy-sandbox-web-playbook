@@ -80,8 +80,6 @@ export class IdentityProvider {
       throw new Error("nonce or client_id is not declared.");
     }
 
-    console.log("#$#$#$#$#$ DEBUG: OPTIONS ", fields)
-
     const credential = await navigator.credentials
       .get({
         identity: {
@@ -102,9 +100,6 @@ export class IdentityProvider {
         mediation,
       })
       .catch((e) => {
-        console.log("this.configURL: ", this.configURL);
-        console.log("this.clientId: ", this.clientId);
-
         console.log(e);
         throw e;
       });

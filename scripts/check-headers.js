@@ -35,6 +35,7 @@ const IGNORE_CONFIG = {
    filenames: [
       'LICENSE',
       '.gitignore',
+      '.dockerignore',
       '.npmrc',
       '.pre-commit-config.yaml',
       'requirements.txt',

@@ -108,7 +108,6 @@ const getOrigin = (userAgent) => {
  **/
 router.post("/username", (req, res) => {
   const username = req.body.username;
-  const email = req.body.email;
   // Only check username, no need to check password as this is a mock
   if (!username || !/[a-zA-Z0-9-_]+/.test(username)) {
     res.status(400).send({ error: "Bad request" });
@@ -121,9 +120,10 @@ router.post("/username", (req, res) => {
       console.log("Adding new user...");
       const picture = new URL("https://www.gravatar.com/");
       picture.pathname = `/avatar/${md5(username)}`;
+      // TODO: replace with better initial user data
       user = {
         username: username,
-        email: email,
+        email: username,
         id: base64url.encode(crypto.randomBytes(32)),
         given_name: "new_given_name",
         family_name: "new_family_name",

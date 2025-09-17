@@ -302,7 +302,6 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
         },
       ],
     };
-      console.log("#$#$#$#$#$# DEBUG: ", responseData)
       return res.json(responseData);
     } catch (e) {
       console.log("User not found: ", e);

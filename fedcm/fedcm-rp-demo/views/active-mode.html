@@ -71,7 +71,6 @@
       const signIn = async () => {
         try {
           const token = await idp.signIn({mode: 'active'});
-          console.log("PASSED SIGN IN STAGE");
           const user = await _fetch('/verify', { token });
           render(html`
           <p>You are signed in!</p>

@@ -120,8 +120,10 @@ router.post("/username", (req, res) => {
       console.log("Adding new user...");
       const picture = new URL("https://www.gravatar.com/");
       picture.pathname = `/avatar/${md5(username)}`;
+      // TODO: replace with better initial user data
       user = {
         username: username,
+        email: username,
         id: base64url.encode(crypto.randomBytes(32)),
         given_name: "new_given_name",
         family_name: "new_family_name",
@@ -221,8 +223,7 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
   if (user.status === "session_expired") {
     return res.status(401).json({ error: "not signed in." });
   }
-
-  // Display multiple accounts for demo purposes
+  
   if (user.username === "multiple-accounts") {
     const user2 = getUser("agektmr");
     const user3 = getUser("john.doe");
@@ -266,7 +267,7 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
           id: user.id,
           given_name: user.given_name,
           name: `${user.given_name} ${user.family_name}`,
-          email: user.username,
+          email: user.email,
           picture: user.picture,
           // login_hints: [user.username],
           approved_clients: user.approved_clients,
@@ -284,6 +285,27 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
           error:
             "Account name cannot be empty. Return a `name` parameter in accounts endpoint",
         });
+    }
+    try {
+      const existingUser = getUser(user.username);
+      const responseData = {
+      accounts: [
+        {
+          id: existingUser.id,
+          given_name: existingUser.given_name,
+          name: `${existingUser.given_name} ${existingUser.family_name}`,
+          email: existingUser.email,
+          username: existingUser.username,
+          tel: existingUser.tel,
+          picture: existingUser.picture,
+          // login_hints: [user.username],
+          approved_clients: existingUser.approved_clients,
+        },
+      ],
+    };
+      return res.json(responseData);
+    } catch (e) {
+      console.log("User not found: ", e);
     }
     const responseData = {
       accounts: [

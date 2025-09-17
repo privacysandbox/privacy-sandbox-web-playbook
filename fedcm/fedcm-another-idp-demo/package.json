@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack -p",
-    "start": "webpack -p && node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",

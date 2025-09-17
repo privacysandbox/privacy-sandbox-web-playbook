@@ -22,6 +22,8 @@ FROM node:20-alpine AS builder
 # Set the working directory inside the container
 WORKDIR /app
 
+ENV HOST=0.0.0.0 
+
 # Copy package definition files
 COPY package*.json ./
 COPY shrinkwrap.yaml ./
@@ -69,8 +71,6 @@ COPY public ./public
 
 # Copy the server-side libraries
 COPY libs ./libs
-
-COPY .data ./.data
 
 # --- Final Configuration ---
 

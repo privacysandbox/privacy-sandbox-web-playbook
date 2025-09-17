@@ -1,0 +1,14 @@
+# Ignore local dependencies; the container will install its own.
+node_modules
+
+# CRITICAL: Ignore local environment variables to prevent leaking secrets
+# and overriding the production environment.
+.env
+
+# Ignore build output; the container will create its own.
+dist
+
+# Ignore local data, logs, and other unnecessary files.
+.data
+*.log
+npm-debug.log

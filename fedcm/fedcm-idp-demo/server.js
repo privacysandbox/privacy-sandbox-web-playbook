@@ -19,6 +19,7 @@
  */
 require("dotenv").config();
 const path = require("path");
+const fs = require('fs');
 const express = require("express");
 const session = require("express-session");
 // const LowdbStore = require('lowdb-session-store')(session);
@@ -288,4 +289,21 @@ const port = process.env.IDP1_PORT || 8080;
 const host = process.env.HOST || '0.0.0.0';
 const listener = app.listen(port, host, () => {
   console.log("Your app is listening on port " + listener.address().port);
+  const dbPath = path.join(__dirname, '.data', 'db.json');
+  console.log('dbPath: ', dbPath);
+  if (fs.existsSync(dbPath)) {
+    try {
+    // Read the file content as a UTF-8 string
+    const dbContent = fs.readFileSync(dbPath, 'utf8');
+    
+    // Log the content
+    console.log('[STARTUP CHECK] ✅ Database file was found. Content:');
+    console.log(dbContent);
+
+    } catch (err) {
+      console.error('[STARTUP CHECK] 🔥 CRITICAL: Database file found but could not be read!', err);
+    }
+  } else {
+    console.error('[STARTUP CHECK] ❌: User Database file was NOT found!');
+  }
 });

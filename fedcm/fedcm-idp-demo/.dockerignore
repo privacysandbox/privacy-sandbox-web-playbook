@@ -9,6 +9,5 @@ node_modules
 dist
 
 # Ignore local data, logs, and other unnecessary files.
-.data
 *.log
 npm-debug.log

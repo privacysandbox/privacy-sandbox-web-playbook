@@ -332,6 +332,7 @@ router.get("/metadata", (req, res) => {
   return res.json({
     privacy_policy_url: `${RP_ORIGIN}/privacy_policy.html`,
     terms_of_service_url: `${RP_ORIGIN}/terms_of_service.html`,
+    client_is_third_party_to_top_frame_origin: true,
     icons: [
       {
         // Logo icons can be configured depending on the RP (on the client_id)

@@ -130,7 +130,7 @@ router.post("/username", (req, res) => {
         picture: picture.toString(),
         approved_clients: [],
         credentials: [],
-        status: user.status,
+        status: user?.status ?? "signed_in" ,
       };
       addUser(user);
     }

@@ -15,3 +15,5 @@ venv/
 /fedcm/caddy.log
 /fedcm/node_modules
 /fedcm/.env
+/fedcm/fedcm-idp-demo/.data
+/fedcm/fedcm-another-idp-demo/.data

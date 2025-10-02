@@ -80,8 +80,6 @@ export class IdentityProvider {
       throw new Error("nonce or client_id is not declared.");
     }
 
-    console.log("DEBUGGING: ", options);
-
     const credential = await navigator.credentials
       .get({
         identity: {

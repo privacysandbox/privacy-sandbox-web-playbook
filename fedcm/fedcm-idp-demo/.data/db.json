@@ -14,7 +14,7 @@
         "https://fedcm-rp-demo.localhost"
       ],
       "credentials": [],
-      "status": ""
+      "status": "signed_in"
     }
   ]
 }

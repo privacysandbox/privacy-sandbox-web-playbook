@@ -152,7 +152,7 @@ app.get("/home", sessionCheck, (req, res) => {
     backURL: back,
     statuses: [
       {
-        value: "",
+        value: "signed_in",
         string: "Signed In",
       },
       {
@@ -180,7 +180,7 @@ app.get("/home", sessionCheck, (req, res) => {
         string: "Temporarily Unavailable",
       },
     ],
-    status: user.status,
+    status: user?.status || "signed_in",
     demo_account: user.username === "demo@example.com",
   });
 });
@@ -198,7 +198,40 @@ app.get("/reauth", (req, res) => {
   // Show `reauth.html`.
   // User is supposed to enter a password (which will be ignored)
   // Make XHR POST to `/signin`
-  res.render("reauth.html", { username });
+  res.render("reauth.html", {
+    username,
+    statuses: [
+      {
+        value: "signed_in",
+        string: "Signed In",
+      },
+      {
+        value: "session_expired",
+        string: "Session Expired",
+      },
+      {
+        value: "invalid_request",
+        string: "Invalid Request",
+      },
+      {
+        value: "unauthorized_client",
+        string: "Unauthorized Client",
+      },
+      {
+        value: "access_denied",
+        string: "Access Denied",
+      },
+      {
+        value: "server_error",
+        string: "Server Error",
+      },
+      {
+        value: "temporarily_unavailable",
+        string: "Temporarily Unavailable",
+      },
+    ],
+    status: req.body.status || "signed_in",
+  });
 });
 
 app.get("/.well-known/web-identity", (req, res) => {

@@ -62,9 +62,10 @@
           <mwc-select
            label="Account status"
            name="status"
+           id="status-select"
            outlined>
             {{#each statuses}}
-            <mwc-list-item value="{{this.value}}"{{#isEqual ../status this.value}} selected{{/isEqual}}>{{this.string}}</mwc-list-item>
+            <mwc-list-item value="{{this.value}}">{{this.string}}</mwc-list-item>
             {{/each}}
           </mwc-select>
           {{#if demo_account}}
@@ -116,6 +117,12 @@
       import { html, render } from 'https://unpkg.com/lit-html@1.0.0/lit-html.js?module';
       
       const _form = document.querySelector('#form');
+
+      // Updated Account Status dropdown selection
+      document.addEventListener('DOMContentLoaded', () => {
+        const statusSelect = document.getElementById('status-select');
+        statusSelect.value = '{{status}}';
+      });
       
       _form.addEventListener('submit', e => {
         e.preventDefault();

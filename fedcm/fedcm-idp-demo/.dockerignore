@@ -11,4 +11,3 @@ dist
 # Ignore local data, logs, and other unnecessary files.
 *.log
 npm-debug.log
-.data

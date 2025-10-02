@@ -15,6 +15,17 @@
       ],
       "credentials": [],
       "status": "signed_in"
+    },
+    {
+      "username": "newuserr@example.com",
+      "email": "newuserr@example.com",
+      "id": "uitxPaFghf-k6Fh067SVD28ZN3Iyka_aq5QHUTE7I38",
+      "given_name": "new_given_name",
+      "family_name": "new_family_name",
+      "picture": "https://www.gravatar.com/avatar/6a3fb42911f10002c1b57fadc6b67ef1",
+      "approved_clients": [],
+      "credentials": [],
+      "status": "signed_in"
     }
   ]
 }

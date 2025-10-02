@@ -72,6 +72,15 @@
       <span class="mdc-line-ripple"></span>
     </div>
     <p class="instructions">Enter a random password. It will be ignored.</p>
+    <mwc-select
+        label="Account status"
+        name="status"
+        id="status-select"
+        outlined>
+          {{#each statuses}}
+          <mwc-list-item value="{{this.value}}">{{this.string}}</mwc-list-item>
+          {{/each}}
+      </mwc-select>
     <div class="buttons center">
       <input
               type="submit"
@@ -90,6 +99,14 @@
 <script type="module">
       new mdc.textField.MDCTextField(document.querySelector(".mdc-text-field"));
       import { _fetch, queryBack, authenticate } from "/client.js";
+
+      // Set initial dropdown value
+      document.addEventListener('DOMContentLoaded', () => {
+        const statusSelect = document.getElementById('status-select');
+        statusSelect.value = '{{status}}';
+      });
+
+
       const redirect = () => {
         // Invoke `IdentityProvider.close()` if it's available.
         if (window.IdentityProvider && IdentityProvider.close) {

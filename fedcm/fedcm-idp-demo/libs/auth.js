@@ -130,7 +130,7 @@ router.post("/username", (req, res) => {
         picture: picture.toString(),
         approved_clients: [],
         credentials: [],
-        status: "",
+        status: user.status,
       };
       addUser(user);
     }
@@ -156,18 +156,24 @@ router.post("/password", (req, res) => {
     return res.status(401).json({ error: "Enter username first." });
   }
 
-  user.status = "";
+  user.status = req.body.status || "signed_in";
 
   addUser(user);
 
-  req.session["signed-in"] = "yes";
-  // Login Status API
+  req.session["signed-in"] = true;
+  // Notify the browser about user login status with Login Status API
   res.set("Set-Login", "logged-in");
   res.json(user);
 });
 
+
+/**
+ * Updates user account information such as name, picture, and status.
+ * This is called from the user's profile page on the IdP.
+ **/
 router.post("/account", csrfCheck, apiSessionCheck, (req, res) => {
   const user = res.locals.user;
+
   if (
     user.username !== "demo@example.com" &&
     (!/[0-9a-zA-Z-_]{0,12}/.test(req.body.given_name) ||
@@ -181,6 +187,7 @@ router.post("/account", csrfCheck, apiSessionCheck, (req, res) => {
 
   if (req.body.status === "session_expired") {
     // Terminate the session here without sending a Login Status
+    // This will trigger a mismatch UI, since the browser hasn't been notified about the user's login status
     req.session.destroy();
     return res.status(200);
   }
@@ -460,7 +467,7 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
     // console.log("The user is signing in to the RP.");
   }
 
-  if (user.status === "") {
+  if (user.status === "signed_in") {
     const token = jwt.sign(
       {
         iss: process.env.ORIGIN,
@@ -509,7 +516,7 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
         error_code = 503;
         break;
       default: {
-        console.log("User status '", user.status, " is invalid");
+        console.log("User status ", user.status, " is invalid");
         error_code = 401;
       }
     }

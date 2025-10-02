@@ -128,7 +128,7 @@ router.post("/username", (req, res) => {
         picture: picture.toString(),
         approved_clients: [],
         credentials: [],
-        status: "",
+        status: "signed_in",
       };
       addUser(user);
     }
@@ -154,11 +154,11 @@ router.post("/password", (req, res) => {
     return res.status(401).json({ error: "Enter username first." });
   }
 
-  user.status = "";
+  user.status = req.body.status || "signed_in";
 
   addUser(user);
 
-  req.session["signed-in"] = "yes";
+  req.session["signed-in"] = true;
   // Login Status API
   res.set("Set-Login", "logged-in");
   res.json(user);
@@ -184,12 +184,12 @@ router.post("/account", csrfCheck, apiSessionCheck, (req, res) => {
   }
 
   if (user.username === "demo@example.com") {
-    user.status = req.body.status || "";
+    user.status = req.body.status || "signed_in";
   } else {
     user.given_name = req.body.given_name || "";
     user.family_name = req.body.family_name || "";
     user.picture = req.body.picture || "";
-    user.status = req.body.status || "";
+    user.status = req.body.status || "signed_in";
   }
 
   addUser(user);
@@ -458,7 +458,7 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
     // console.log("The user is signing in to the RP.");
   }
 
-  if (user.status === "") {
+  if (user.status === "signed_in") {
     const token = jwt.sign(
       {
         iss: process.env.ORIGIN,
@@ -507,7 +507,7 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
         error_code = 503;
         break;
       default: {
-        console.log("User status '", user.status, " is invalid");
+        console.log("User status", user.status, "is invalid");
         error_code = 401;
       }
     }

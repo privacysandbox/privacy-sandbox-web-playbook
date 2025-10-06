@@ -172,3 +172,16 @@ export const unregisterCredential = async (credId) => {
   localStorage.removeItem("credId");
   return _fetch(`/auth/removeKey?credId=${encodeURIComponent(credId)}`);
 };
+
+class Loading {
+  constructor() {
+    this.progress = $('#progress');
+  }
+  start() {
+    this.progress.indeterminate = true;    
+  }
+  stop() {
+    this.progress.indeterminate = false;    
+  }
+}
+export const loading = new Loading();

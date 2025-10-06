@@ -1,0 +1,63 @@
+<!--
+ Copyright 2019 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+  NOTE: This is not an officially supported Google product
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>FedCM IDP Demo</title>
+        <meta name="description" content="FedCM IDP Demo">
+        <link id="favicon" rel="icon"
+            href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- import the webpage's stylesheet -->
+        <link rel="stylesheet" href="/bundle.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet"
+            href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+        <script
+            src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
+        <script src="components-bundle.js" type="module"></script>
+    </head>
+    <body class="mdc-typography">
+        <mwc-top-app-bar-fixed>
+            <span slot="title">FedCM RP Demo: FedCM within an iframe</span>
+            <mwc-icon-button
+                id="code"
+                icon="code"
+                slot="actionItems"></mwc-icon-button>
+        </mwc-top-app-bar-fixed>
+        <main class="content">
+            <div class="center">
+            <!-- This iframe originates from idp2, and the idp2 calls FedCM usinf the SDK from idpq. Essentially, the user is signing in on the RP with the IdP1 -->
+            <iframe class="idp2-iframe"
+                src="{{idp2_origin}}/iframe"
+                allow="identity-credentials-get"></iframe>
+            <!-- Allow this iframe to call navigator.credentials.get() -->
+            <p class="instructions">
+                This is an iframe originating from <a
+                    href="{{idp_2_origin}}/iframe">IdP-2</a>. It calls FedCM to
+                sign in with IdP-1. Make sure you're signed in on the <a
+                    href="{{idp_1_origin}}">IdP-1</a> to see the FedCM UI
+                triggered.
+            </p>
+            </div>
+        </main>
+    </body>
+</html>

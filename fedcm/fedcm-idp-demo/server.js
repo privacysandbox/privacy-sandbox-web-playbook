@@ -131,9 +131,13 @@ app.get("/authorization", (req, res) => {
 
 app.get("/iframe", (req, res) => {
   const user = res.locals.user;
-  // `home.html` shows sign-out link
-  const ot_token = process.env.OT_TOKEN;
-  res.render("iframe.html", { ot_token });
+
+  res.render("iframe.html", { 
+    rp_origin: process.env.RP_URL,
+    idp_1_origin: process.env.IDP1_URL,
+    idp_2_origin: process.env.IDP2_URL,
+    user_info: user
+   });
 });
 
 app.get("/home", sessionCheck, (req, res) => {

@@ -18,52 +18,126 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>FedCM IDP-2 Demo</title>
-    <meta name="description" content="FedCM IDP-2 Demo">
+    <title>FedCM IDP-2 iframe</title>
+    <meta name="description" content="FedCM IDP Demo">
     <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="origin-trial" content="{{ot_token}}">
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="/bundle.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
     <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
     <script src="components-bundle.js"></script>
+    <style>
+      body {
+        background-color: #fffdee;
+      }
+    </style>
+     <meta name="nonce" content="{{nonce}}">
   </head>
   <body class="mdc-typography">
-    <main class="content center">
+    <mwc-linear-progress id="progress"></mwc-linear-progress>
+    <main class="content">
+      <div id="profile" class="center"></div>
+      <div id="login" class="center"></div>
+      <div class="center">
+        <p class="instructions">
+          This is an iframe originating from <a href="{{idp_2_origin}}/iframe">IdP-2</a>. It calls FedCM to sign in with IdP-1. Make sure you're signed in on the <a href="{{idp_1_origin}}">IdP-1</a> to see the FedCM UI triggered.
+        </p>
+     </div>
+      <p class="instructions"></p>
     </main>
     <script type="module">
-      import { $, _fetch, getUserInfo } from '/client.js';
+      import { $, _fetch, getUserInfo, loading, toast } from '/client.js';
       import { html, render } from 'https://unpkg.com/lit-html@1.0.0/lit-html.js?module';
+      import { IdentityProvider } from "{{idp_1_origin}}/fedcm.js";
 
-      const signIn = () => {
-        window.parent.postMessage('sign-in', '*');
-      }
-
-      getUserInfo().then(user_info => {
-        // Render personalized sign-in button
-        console.log(user_info);
-        const button = html`<div class="signin-button" @click="${signIn}"><div>
-          <img src="${user_info.picture}" class="avatar">
-        </div><div>
-          <span class="signin-as">Sign in as ${user_info.givenName}</span><br>
-          <span class="signin-email">${user_info.email}</span>
-        </div></div>`;
-        render(button, $('main'));
-      }).catch(() => {
-        // Render normal sign-in button
-        const openIdP = () => {
-          const url = new URL('https://fedcm-idp-demo.glitch.me');
-          url.searchParams.append('back', 'https://fedcm-rp-demo.glitch.me/button');
-          window.parent.location = url.toString();
-        }
-        const button = html`<mwc-button @click="${openIdP}" raised>Goto the IdP and Sign in</mwc-button>`;
-        render(button, $('main'));
+      // For the single-IdP flow, import the SDK from the primary IdP.
+      const idp = new IdentityProvider({
+        configURL: "{{idp_1_origin}}/fedcm.json",
+        clientId: "{{idp_2_origin}}",
       });
 
+       const signIn = async () => {
+        try {
+          const token = await idp.signIn();
+          // Construct the payload for the verification request.
+          const payload = { token, nonce: "{{nonce}}" };
+          const user = await _fetch("/verify", payload);
+
+          render(
+            html`
+          <p>You are signed in!</p>
+          <img src="${user.picture}" class="picture">
+          <p>${user.name} (${user.username})</p>
+          <mwc-button @click="${signout(
+            user.id
+          )}" raised>Sign-out</mwc-button>
+          <p class="instructions">
+          Press <strong>sign-out</strong> to sign out on this RP. This will call <code>navigator.credentials.preventSilentAccess()</code>, and prevent auto-reauthentication with this account when the user visits the RP again. Next time the user visits the RP, they'll be treated as a returning user with this account. Learn more in the
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-auto-reauthn#prevent-silent-access" target="_blank">developer guide</a>.
+          </p>
+           <mwc-button @click="${disconnectFromIdP(
+            user.id
+          )}">Disconnect</mwc-button>
+          <p class="instructions">
+          Press <strong>disconnect</strong> to disconnect from the IdP. The Disconnect API allows the user to disconnect the IdP account
+          from the RP on the browser as well as on the IdP server. Next time the user visits the RP they'll be treated as a new user, and
+          the <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-126-updates#fields-api" target="_blank">disclosure
+          UI</a> will be shown. Learn more about the Disconnect API
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-122-updates#disconnect_api"
+          target="_blank">here</a>.
+          </p>
+          <p class="instructions">
+          Both of the methods <code>signOut()</code> and <code>disconnect()<code> are defined in the IdP's <a href="https://fedcm-idp-demo.glitch.me/fedcm.js" target="_blank">config file</a>. The methods can also be implemented by the RP.
+          </p>
+          `,
+            $("#profile")
+          );
+          $("#login").classList.add("hidden");
+        } catch (e) {
+          console.error(e);
+          toast(e.message);
+        }
+      };
+
+       const signout = (account_id) => async () => {
+        try {
+          loading.start();
+          toast("You are signed out. Redirecting in 3.0 sec.");
+          setTimeout(() => {
+            idp.signOut();
+            location.href = "/iframe";
+          }, 3000);
+        } catch (e) {
+          loading.stop();
+          console.error(e);
+          toast(e.message);
+        }
+      };
+
+      const disconnectFromIdP = (account_id) => async () => {
+        try {
+          await idp.disconnect(account_id);
+          toast("You are disconnected and signed out. Redirecting in 3.0 sec.");
+          setTimeout(() => {
+            location.href = "/iframe";
+          }, 3000);
+        } catch (e) {
+          console.log(e);
+          toast("Account disconnection failed.");
+        }
+      };
+
+      if ("IdentityCredential" in window) {
+        await signIn();
+      } else {
+        $("#unsupported").classList.remove("hidden");
+      }
+
     </script>
+     <mwc-snackbar id="snackbar"></mwc-snackbar>
   </body>
 </html>

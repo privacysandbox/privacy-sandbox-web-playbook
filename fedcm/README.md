@@ -106,4 +106,5 @@ This project demonstrates various features of the **Federated Credential Managem
 | **Domain Hint**  | [`https://fedcm-rp-demo.localhost/domain-hint`](https://fedcm-rp-demo.localhost/domain-hint) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
 | **Domain Hint in Passive Mode** | [`https://fedcm-rp-demo.localhost/domain-hint-passive`](https://fedcm-rp-demo.localhost/domain-hint-passive) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
 | **Custom Fields**  | [`https://fedcm-rp-demo.localhost/alternative-fields`](https://fedcm-rp-demo.localhost/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
-
+| **Custom Fields**  | [`https://fedcm-rp-demo.localhost/alternative-fields`](https://fedcm-rp-demo.localhost/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
+| **FedCM in iframe**  | [`https://fedcm-rp-demo.localhost/iframe`](https://fedcm-rp-demo.localhost/iframe) | [Call FedCM from cross-origin iframe](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#call_fedcm_from_within_a_cross-origin_iframe) |

@@ -196,6 +196,20 @@ app.get("/domain-hint-passive", (req, res) => {
   });
 });
 
+/*
+ * Demonstrates the behavior when FedCM is called from within a third-party iframe embedded on the RP 
+ */
+app.get("/iframe", (req, res) => {
+  const nonce = Math.floor(Math.random() * 10e10);
+  req.session.nonce = nonce;
+  const idp2_origin = IDP2_ORIGIN;
+
+  res.render("iframe.html", {
+    nonce,
+    idp2_origin,
+  });
+});
+
 app.get("/button", (req, res) => {
   const nonce = Math.floor(Math.random() * 10e10);
   // TODO: Shouldn't I timeout this?

@@ -52,6 +52,7 @@ const RP_CLIENT_ID = process.env.RP_URL;
 const RP_ORIGIN = process.env.RP_URL;
 const RP_MULTI_IDP_CLIENT_ID = "https://fedcm-multi-idp-rp.glitch.me";
 const RP_MULTI_IDP_ORIGIN = "https://fedcm-multi-idp-rp.glitch.me/";
+const IDP2_ORIGIN= process.env.IDP2_URL;
 
 const RP_CLIENT_IDS = [
   RP_CLIENT_ID,
@@ -59,6 +60,7 @@ const RP_CLIENT_IDS = [
   "http://localhost:8080",
   "https://project-sesame-426206.appspot.com",
   "https://identity-demos.dev",
+  IDP2_ORIGIN
 ];
 
 const csrfCheck = (req, res, next) => {
@@ -336,10 +338,14 @@ router.get("/accounts", csrfCheck, apiSessionCheck, (req, res) => {
 
 router.get("/metadata", (req, res) => {
   console.log("/auth/metadata");
+
+  const clientIsThirdParty = req.query.client_id && req.query.top_frame_origin 
+    && req.query.client_id !== req.query.top_frame_origin;
+
   return res.json({
     privacy_policy_url: `${RP_ORIGIN}/privacy_policy.html`,
     terms_of_service_url: `${RP_ORIGIN}/terms_of_service.html`,
-    client_is_third_party_to_top_frame_origin: true,
+    client_is_third_party_to_top_frame_origin: clientIsThirdParty,
     icons: [
       {
         // Logo icons can be configured depending on the RP (on the client_id)
@@ -357,6 +363,7 @@ const isValidOrigin = (originStr) => {
     const origin = new URL(originStr).origin;
     return (
       origin === new URL(RP_ORIGIN).origin ||
+      origin === new URL(IDP2_ORIGIN).origin ||
       origin === new URL(RP_MULTI_IDP_ORIGIN).origin ||
       origin === new URL("http://localhost:8080").origin ||
       origin === new URL("https://project-sesame.googleplex.com/").origin ||

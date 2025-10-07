@@ -17,7 +17,7 @@
  *
  * NOTE: This is not an officially supported Google product
  */
-const { getUser } = require('./db');
+const { getUser, getUserById, addUser } = require('./db');
 
 /**
  * Checks CSRF protection using custom header `X-Requested-With`
@@ -50,4 +50,29 @@ const apiSessionCheck = (req, res, next) => {
   next();
 };
 
-module.exports = { sessionCheck, apiSessionCheck };
+function csrfCheck(req, res, next) {
+  if (req.header('X-Requested-With') === 'XMLHttpRequest' ||
+      req.header('Sec-FedCM-CSRF') === '?1') {
+    next();
+  } else {
+    return res.status(400).json({ error: 'Invalid access.' });
+  }
+};
+
+function getOrCreateUser(user_id, username = '', name = '', picture = '') {
+  // See if account already exists
+  let user = getUserById(user_id);
+  // If user entry is not created yet, create one
+  if (!user) {
+    user = {
+      user_id,
+      username,
+      name,
+      picture
+    };
+    addUser(user);
+  }
+  return user;
+}
+
+module.exports = { sessionCheck, apiSessionCheck, csrfCheck, getOrCreateUser };

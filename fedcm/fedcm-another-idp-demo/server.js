@@ -23,8 +23,9 @@ const express = require("express");
 const session = require("express-session");
 // const LowdbStore = require('lowdb-session-store')(session);
 const hbs = require("hbs");
+const jwt = require("jsonwebtoken");
 const auth = require("./libs/auth");
-const { sessionCheck } = require("./libs/common");
+const { sessionCheck, csrfCheck, getOrCreateUser } = require("./libs/common");
 const app = express();
 const isDevelopmentEnvironment = process.env.DEV_ENV;
 
@@ -130,10 +131,49 @@ app.get("/authorization", (req, res) => {
 });
 
 app.get("/iframe", (req, res) => {
+  const nonce = Math.floor(Math.random() * 10e10);
   const user = res.locals.user;
-  // `home.html` shows sign-out link
-  const ot_token = process.env.OT_TOKEN;
-  res.render("iframe.html", { ot_token });
+  req.session.nonce = nonce;
+  
+  res.render("iframe.html", { 
+    rp_origin: process.env.RP_URL,
+    idp_1_origin: process.env.IDP1_URL,
+    idp_2_origin: process.env.IDP2_URL,
+    user_info: user,
+    nonce: nonce
+   });
+});
+
+// Method to verify that the user is signed in when deomonstrating the iframe functionality
+app.post("/verify", csrfCheck, (req, res) => {
+  const { token: raw_token } = req.body;
+
+  try {
+    
+    const nonce = req.session.nonce?.toString() 
+      // In an embedded iframe, the nonce is sent in the request body
+      ?? req.body.nonce.toString();
+
+    // Determine the valid issuer(s) for the token.
+    const validIssuers = [process.env.IDP1_URL];
+
+    const token = jwt.verify(raw_token, "xxxxx", {
+      issuer: validIssuers,
+      nonce,
+      audience: process.env.IDP2_URL,
+    });
+    
+    const user = getOrCreateUser(token.sub, token.email, token.name, token.picture);
+
+    req.session.user_id = user.user_id;
+    req.session.username = user.username;
+    req.session.name = user.name;
+    req.session.picture = user.picture;
+    res.status(200).json(user);
+  } catch (e) {
+    console.error(e.message);
+    res.status(401).json({ error: "ID token verification failed." });
+  }
 });
 
 app.get("/home", sessionCheck, (req, res) => {

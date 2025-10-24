@@ -35,11 +35,17 @@
           href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css"
   />
   <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
-  <script src="components-bundle.js"></script>
+  <script src="components-bundle.js" type="module"></script>
 </head>
 <body class="mdc-typography">
 <mwc-top-app-bar-fixed>
   <span slot="title">FedCM IDP Demo</span>
+  <mwc-icon-button
+          id="code"
+          icon="code"
+          slot="actionItems"
+          href="{{code_source}}"
+    ></mwc-icon-button>
 </mwc-top-app-bar-fixed>
 <main class="content center">
   <div id="uvpa_available" class="hidden">

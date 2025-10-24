@@ -1,0 +1,71 @@
+<!--
+ Copyright 2025 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+  NOTE: This is not an officially supported Google product
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>FedCM RP Demo - Menu</title>
+  <meta name="description" content="FedCM RP Demo Menu">
+  <link id="favicon" rel="icon" href="https://cdn.glitch.me/94838ffe-241b-4a67-a9e0-290bfe34c351%2Fbank.png?v=1639111444422" type="image/x-icon">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/bundle.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
+  <script src="components-bundle.js" type="module"></script>
+</head>
+<body class="mdc-typography">
+<mwc-top-app-bar-fixed>
+  <span slot="title">Menu</span>
+    <mwc-icon-button
+          id="code"
+          icon="code"
+          slot="actionItems"
+          href="{{code_source}}"
+  ></mwc-icon-button>
+</mwc-top-app-bar-fixed>
+<main class="content">
+  <h2 class="center">Features</h2>
+  <mwc-list>
+    <a href="/"><mwc-list-item>Passive Mode</mwc-list-item></a><br>
+    <a href="/active-mode"><mwc-list-item>Active Mode</mwc-list-item></a><br>
+    <a href="/domain-hint"><mwc-list-item>Domain Hint (Active)</mwc-list-item></a><br>
+    <a href="/domain-hint-passive"><mwc-list-item>Domain Hint (Passive)</mwc-list-item></a><br>
+    <a href="/alternative-fields"><mwc-list-item>Alternative Fields</mwc-list-item></a><br>
+    <a href="/authorization"><mwc-list-item>Authorization (Continuation API)</mwc-list-item></a><br>
+    <a href="/iframe"><mwc-list-item>FedCM in iFrame</mwc-list-item></a><br>
+  </mwc-list>
+
+  <h2 class="center">Identity Providers</h2>
+  <mwc-list>
+    <a href="{{idp_origin}}" target="_blank"><mwc-list-item>IdP 1</mwc-list-item></a><br>
+    <a href="{{idp2_origin}}" target="_blank"><mwc-list-item>IdP 2</mwc-list-item></a>
+  </mwc-list>
+</main>
+<script type="module">
+  const codeButton = document.getElementById('code'); 
+  codeButton.addEventListener('click', () => {
+    const url = codeButton.getAttribute('href');
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  });
+</script>
+</body>
+</html>

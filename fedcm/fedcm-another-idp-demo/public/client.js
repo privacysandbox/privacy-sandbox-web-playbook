@@ -23,6 +23,16 @@ const CLIENT_ID = "{{rp_origin}}";
 
 export const $ = document.querySelector.bind(document);
 
+const codeButton = document.getElementById('code'); 
+if (codeButton) {
+  codeButton.addEventListener('click', () => {
+    const url = codeButton.getAttribute('href');
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  });
+}
+
 export const toast = (text) => {
   $("#snackbar").labelText = text;
   $("#snackbar").show();

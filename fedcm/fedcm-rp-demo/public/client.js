@@ -21,6 +21,23 @@ import { html, render } from 'https://unpkg.com/lit-html@2.2.0/lit-html.js?modul
 
 export const $ = document.querySelector.bind(document);
 
+const codeButton = document.getElementById('code');
+if (codeButton) {
+  codeButton.addEventListener('click', () => {
+    const url = codeButton.getAttribute('href');
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  });
+}
+
+const menuButton = document.getElementById('menu');
+if (menuButton) {
+  menuButton.addEventListener('click', () => {
+    location.href = '/menu';
+  });
+}
+
 export const toast = (text) => {
   $('#snackbar').labelText = text;
   $('#snackbar').show();
@@ -68,4 +85,3 @@ class Loading {
 }
 
 export const loading = new Loading();
-

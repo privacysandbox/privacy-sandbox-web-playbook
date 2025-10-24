@@ -18,10 +18,9 @@
  * NOTE: This is not an officially supported Google product
  */
 
-import '@material/mwc-top-app-bar-fixed';
 import '@material/mwc-button';
-import '@material/mwc-list';
-import '@material/mwc-list/mwc-list-item';
+import '@material/mwc-fab';
+import '@material/mwc-top-app-bar-fixed';
 import '@material/mwc-textfield';
-import '@material/mwc-select';
 import '@material/mwc-snackbar';
+import '@material/mwc-icon-button';

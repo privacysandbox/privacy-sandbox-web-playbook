@@ -82,3 +82,14 @@ iframe {
   margin-top: 20px !important;
   min-height: 400px !important;
 }
+
+.code-block {
+      background-color: #f4f4f4; 
+      border: 1px solid #ddd;  
+      border-radius: 4px;       
+      padding: 16px;            
+      font-family: monospace;   
+      text-align: left;         
+      white-space: pre-wrap;    
+      word-break: break-all;   
+    }

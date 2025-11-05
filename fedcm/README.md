@@ -100,11 +100,12 @@ This project demonstrates various features of the **Federated Credential Managem
 
 | Feature | Demo Page | Documentation |
 | :--- | :--- | :--- |
-| **Passive Mode**  | [`https://fedcm-rp-demo.localhost/`](https://fedcm-rp-demo.localhost/) | [FedCM Auto-reauthentication](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
-| **Active Mode** | [`https://fedcm-rp-demo.localhost/active-mode`](https://fedcm-rp-demo.localhost/active-mode) | [FedCM Sign-in Flow](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
-| **Multiple IdPs** | [`https://fedcm-rp-demo.localhost/multi-idp`](https://fedcm-rp-demo.localhost/multi-idp) | [FedCM Developer Guide](https://privacysandbox.google.com/cookies/fedcm/implement/identity-provider) |
-| **Domain Hint**  | [`https://fedcm-rp-demo.localhost/domain-hint`](https://fedcm-rp-demo.localhost/domain-hint) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
-| **Domain Hint in Passive Mode** | [`https://fedcm-rp-demo.localhost/domain-hint-passive`](https://fedcm-rp-demo.localhost/domain-hint-passive) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
-| **Custom Fields**  | [`https://fedcm-rp-demo.localhost/alternative-fields`](https://fedcm-rp-demo.localhost/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
-| **Custom Fields**  | [`https://fedcm-rp-demo.localhost/alternative-fields`](https://fedcm-rp-demo.localhost/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
-| **FedCM in iframe**  | [`https://fedcm-rp-demo.localhost/iframe`](https://fedcm-rp-demo.localhost/iframe) | [Call FedCM from cross-origin iframe](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#call_fedcm_from_within_a_cross-origin_iframe) |
+| **Passive Mode**  | [`https://fedcm-demo-rp.dev/`](https://fedcm-demo-rp.dev/) | [FedCM Auto-reauthentication](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
+| **Active Mode** | [`https://fedcm-demo-rp.dev/active-mode`](https://fedcm-demo-rp.dev/active-mode) | [FedCM Sign-in Flow](https://privacysandbox.google.com/cookies/fedcm/why#fedcm_ui_modes) |
+| **Multiple IdPs** | [`https://fedcm-demo-rp.dev/multi-idp`](https://fedcm-demo-rp.dev/multi-idp) | [FedCM Developer Guide](https://privacysandbox.google.com/cookies/fedcm/implement/identity-provider) |
+| **Domain Hint**  | [`https://fedcm-demo-rp.dev/domain-hint`](https://fedcm-demo-rp.dev/domain-hint) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
+| **Domain Hint in Passive Mode** | [`https://fedcm-demo-rp.dev/domain-hint-passive`](https://fedcm-demo-rp.dev/domain-hint-passive) | [Using `domain_hint`](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#domain-hint) |
+| **Custom Fields**  | [`https://fedcm-demo-rp.dev/alternative-fields`](https://fedcm-demo-rp.dev/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
+| **Custom Fields**  | [`https://fedcm-demo-rp.dev/alternative-fields`](https://fedcm-demo-rp.dev/alternative-fields) | [IdP Sign-in Endpoint](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#fields) |
+| **FedCM in iframe**  | [`https://fedcm-demo-rp.dev/iframe`](https://fedcm-demo-rp.dev/iframe) | [Call FedCM from cross-origin iframe](https://privacysandbox.google.com/cookies/fedcm/implement/relying-party#call_fedcm_from_within_a_cross-origin_iframe) |
+| **FedCM in iframe**  | [`https://fedcm-demo-rp.dev/json-response`](https://fedcm-demo-rp.dev/iframe) | [Call FedCM from cross-origin iframe](https://developer.chrome.com/docs/identity/fedcm/implement/identity-provider#id-assertion-endpoint) |

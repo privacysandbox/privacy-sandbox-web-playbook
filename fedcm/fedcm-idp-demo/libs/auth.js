@@ -536,6 +536,137 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
   }
 });
 
+// ID assertion endpoint that returns a JSON as a response
+router.post("/id-assertion-json-response", csrfCheck, apiSessionCheck, (req, res) => {
+  const {
+    client_id,
+    nonce,
+    account_id,
+    consent_acquired,
+    disclosure_text_shown,
+    params,
+  } = req.body;
+
+  let user = res.locals.user;
+
+  let scope;
+
+  try {
+    const paramsObject = JSON.parse(params);
+    if ("scope" in paramsObject) {
+      scope = paramsObject.scope;
+    } else {
+      scope = undefined;
+    }
+  } catch (error) {
+    console.error("Error parsing params:", error);
+    scope = undefined;
+  }
+
+  if (user.username === "multiple-accounts") {
+    user = getUserById(account_id);
+  }
+
+  const currentOrigin = new URL(req.headers.origin)
+    .toString()
+    .replace(/\/$/, "");
+
+  // If the user did not consent or the account does not match who is currently signed in, return error.
+  if (
+    !RP_CLIENT_IDS.includes(client_id) ||
+    account_id !== user.id ||
+    !isValidOrigin(currentOrigin)
+  ) {
+    console.error("Invalid request.", req.body);
+    return res.status(400).json({ error: "Invalid request." });
+  }
+
+  if (
+    (consent_acquired === "true" || disclosure_text_shown === "true") &&
+    !user.approved_clients.includes(currentOrigin)
+  ) {
+    // console.log("The user is registering to the RP.");
+    user.approved_clients.push(currentOrigin);
+    addUser(user);
+  } else {
+    // console.log("The user is signing in to the RP.");
+  }
+
+  if (user.status === "signed_in") {
+    // For the demo purpose, we can use a jwt as access token with minimal data for verification
+    const accessToken = jwt.sign(
+      {
+        iss: process.env.ORIGIN,
+        // sub: user.id,
+        aud: client_id,
+        nonce,
+        // name: `${user.given_name} ${user.family_name}`,
+        // email: user.username,
+        // given_name: user.given_name,
+        // family_name: user.family_name,
+        // picture: user.picture,
+
+      },
+      "xxxxx"
+    );
+
+    console.log(
+      "Checking if RP specified any additional required permissions in scope: ",
+      params
+    );
+
+    console.log("params type: ", typeof params);
+    if (params) {
+      const paramsObject = JSON.parse(params);
+    }
+
+    if (scope) {
+      return res.json({
+        continue_on: `/authorization?client_id=${client_id}&scope=${scope}&nonce=${nonce}`,
+      });
+    }
+
+      const tokenObject = {
+        "this_is_a_json": true,
+        "access_token": accessToken,
+        "exp": new Date().getTime() + IDTOKEN_LIFETIME,
+        "iat": new Date().getTime(),
+          "user_info": {
+            "sub": user.id,
+            "email": user.username,
+            "given_name": user.given_name,
+            "family_name": user.family_name,
+            "name": `${user.given_name} ${user.family_name}`,
+            "picture": user.picture
+        }
+      }
+
+    return res.json({
+      "token" : tokenObject
+    });
+  } else {
+    let error_code = 401;
+    switch (user.status) {
+      case "server_error":
+        error_code = 500;
+        break;
+      case "temporarily_unavailable":
+        error_code = 503;
+        break;
+      default: {
+        console.log("User status ", user.status, " is invalid");
+        error_code = 401;
+      }
+    }
+    return res.status(error_code).json({
+      error: {
+        code: user.status,
+        url: `${ORIGIN}/error.html&type=${user.status}`,
+      },
+    });
+  }
+});
+
 router.post("/authorize", csrfCheck, apiSessionCheck, (req, res) => {});
 
 router.post("/disconnect", csrfCheck, apiSessionCheck, (req, res) => {

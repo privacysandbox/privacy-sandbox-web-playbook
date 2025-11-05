@@ -244,8 +244,13 @@ app.get("/reauth", (req, res) => {
 
 app.get("/.well-known/web-identity", (req, res) => {
   console.log("/.well-known/web-identity");
+  // return res.json({
+  //   provider_urls: [`${process.env.IDP1_URL}/fedcm.json`],
+  // });
   return res.json({
-    provider_urls: [`${process.env.IDP1_URL}/fedcm.json`],
+    provider_urls: [`${process.env.IDP1_URL}/fedcm.json`, `${process.env.IDP1_URL}/fedcm-json-response.json`],
+    accounts_endpoint: "/auth/accounts",
+    login_url: "/"
   });
 });
 
@@ -266,6 +271,29 @@ app.get("/fedcm.json", (req, res) => {
       //   "supports_use_other_account": true,
       // }
     },
+    branding: {
+      background_color: "#6200ee",
+      color: "#ffffff",
+      icons: [
+        {
+          url: "https://cdn.glitch.global/4673feef-8c3a-4ea6-91b5-aad78b1d7251/idp-logo-512.png?v=1713514252268",
+          size: 512,
+        },
+      ],
+    },
+  });
+});
+
+// This FedCM config file contains id_assertion_endpoint that returns a JSON, not a token string in response
+app.get("/fedcm-json-response.json", (req, res) => {
+  console.log("loading /fedcm-json-response.json...");
+
+  return res.json({
+    accounts_endpoint: "/auth/accounts",
+    client_metadata_endpoint: "/auth/metadata",
+    id_assertion_endpoint: "/auth/id-assertion-json-response",
+    disconnect_endpoint: "/auth/disconnect",
+    login_url: "/",
     branding: {
       background_color: "#6200ee",
       color: "#ffffff",

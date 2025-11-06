@@ -284,6 +284,8 @@ app.get("/.well-known/web-identity", (req, res) => {
     provider_urls: [
       `${process.env.IDP2_URL}/fedcm.json`,
     ],
+    accounts_endpoint: "/auth/accounts",
+    login_url: "/",
   });
 });
 

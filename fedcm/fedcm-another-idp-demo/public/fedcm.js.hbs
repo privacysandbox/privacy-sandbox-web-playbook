@@ -67,14 +67,12 @@ export class IdentityProvider {
       loginHint,
       domainHint,
       context,
-      nonce,
       fields,
       mediation,
       params = {},
     } = options;
-    if (!nonce) {
-      nonce = document.querySelector('meta[name="nonce"]')?.content;
-    }
+
+    let nonce = params?.nonce || document.querySelector('meta[name="nonce"]')?.content;
     if (!nonce || !CLIENT_ID) {
       throw new Error("nonce or client_id is not declared.");
     }
@@ -88,22 +86,22 @@ export class IdentityProvider {
             {
               configURL: IDP_2_CONFIG,
               clientId: CLIENT_ID,
-              nonce,
+              {{!-- nonce, --}}
               loginHint,
               domainHint,
               fields,
-              params,
+              params: {...params, nonce},
             },
             // This is IdP-1 listed in the same get call. The IdP.-2 may want to include IdP-1 for multiple reasons. 
             // For example, if IdP-2 also owns IdP-1, or if the client RPs of the IdP-2 request support for IdP-1 as well.
             {
               configURL: IDP_1_CONFIG,
               clientId: CLIENT_ID,
-              nonce,
+              {{!-- nonce, --}}
               loginHint,
               domainHint,
               fields,
-              params,
+              params: {...params, nonce},
             },
           ],
           mode,

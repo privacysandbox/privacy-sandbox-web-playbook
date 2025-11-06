@@ -246,6 +246,8 @@ app.get("/.well-known/web-identity", (req, res) => {
   console.log("/.well-known/web-identity");
   return res.json({
     provider_urls: [`${process.env.IDP1_URL}/fedcm.json`],
+    accounts_endpoint: "/auth/accounts",
+    login_url: "/",
   });
 });
 

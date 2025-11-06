@@ -71,7 +71,6 @@ app.use((req, res, next) => {
 
 app.post("/verify", csrfCheck, (req, res) => {
   const { token: raw_token, multi_idp } = req.body;
-
   try {
     const nonce = req.session.nonce.toString();
 

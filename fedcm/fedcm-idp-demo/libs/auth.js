@@ -422,7 +422,6 @@ router.post("/token", csrfCheck, apiSessionCheck, (req, res) => {
 router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
   const {
     client_id,
-    nonce,
     account_id,
     consent_acquired,
     disclosure_text_shown,
@@ -432,17 +431,14 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
   let user = res.locals.user;
 
   let scope;
+  let nonce;
 
   try {
     const paramsObject = JSON.parse(params);
-    if ("scope" in paramsObject) {
-      scope = paramsObject.scope;
-    } else {
-      scope = undefined;
-    }
+    scope = paramsObject.scope;
+    nonce = paramsObject.nonce;
   } catch (error) {
     console.error("Error parsing params:", error);
-    scope = undefined;
   }
 
   if (user.username === "multiple-accounts") {
@@ -497,7 +493,6 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
       params
     );
 
-    console.log("params type: ", typeof params);
     if (params) {
       const paramsObject = JSON.parse(params);
     }
@@ -505,11 +500,10 @@ router.post("/idtokens", csrfCheck, apiSessionCheck, (req, res) => {
     if (scope) {
       // console.log("/idtokens returns `continue_on`");
       return res.json({
-        continue_on: `/authorization?client_id=${client_id}&scope=${scope}&nonce=${nonce}`,
+        continue_on: `/authorization?client_id=${client_id}&scope=${scope}&nonce=${params.nonce}`,
       });
     }
 
-    // console.log(`/idtokens returns "token": "${token}"`);
     return res.json({
       token,
     });

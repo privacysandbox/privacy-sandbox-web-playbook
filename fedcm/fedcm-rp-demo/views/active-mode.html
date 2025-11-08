@@ -28,15 +28,20 @@
   <link rel="stylesheet" href="/bundle.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
   <script src="components-bundle.js" type="module"></script>
   <meta name="nonce" content="{{nonce}}">
   <meta name="fedcm_demo_client_id" content="{{client_id}}">
 </head>
 <body class="mdc-typography">
 <mwc-top-app-bar-fixed>
+  <mwc-icon-button id="menu" icon="menu" slot="navigationIcon"></mwc-icon-button>
   <span slot="title">FedCM RP Demo</span>
-  <mwc-icon-button id="code" icon="code" slot="actionItems"></mwc-icon-button>
+    <mwc-icon-button
+          id="code"
+          icon="code"
+          slot="actionItems"
+          href="{{code_source}}"
+  ></mwc-icon-button>
 </mwc-top-app-bar-fixed>
 <mwc-linear-progress id="progress"></mwc-linear-progress>
 <main class="content">

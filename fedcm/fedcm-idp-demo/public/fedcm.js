@@ -68,17 +68,26 @@ export class IdentityProvider {
       loginHint,
       domainHint,
       context,
-      nonce,
       fields,
       mediation,
       params = {},
     } = options;
-    if (!nonce) {
-      nonce = document.querySelector('meta[name="nonce"]')?.content;
-    }
+
+    let nonce = params?.nonce || document.querySelector('meta[name="nonce"]')?.content;
     if (!nonce || !this.clientId) {
       throw new Error("nonce or client_id is not declared.");
     }
+
+    const providersArray =  [
+            {
+              configURL: this.configURL,
+              clientId: this.clientId,
+              loginHint,
+              domainHint,
+              fields,
+              params: { ...params, nonce },
+            },
+          ];
 
     const credential = await navigator.credentials
       .get({
@@ -87,11 +96,10 @@ export class IdentityProvider {
             {
               configURL: this.configURL,
               clientId: this.clientId,
-              nonce,
               loginHint,
               domainHint,
               fields,
-              params,
+              params: { ...params, nonce },
             },
           ],
           mode,

@@ -39,18 +39,19 @@
           rel="stylesheet"
           href="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.css"
   />
-  <script src="https://cdn.jsdelivr.net/gh/herrjemand/Base64URL-ArrayBuffer@latest/lib/base64url-arraybuffer.js"></script>
   <script src="components-bundle.js" type="module"></script>
   <meta name="nonce" content="{{nonce}}" />
   <meta name="fedcm_demo_client_id" content="{{client_id}}" />
 </head>
 <body class="mdc-typography">
 <mwc-top-app-bar-fixed>
+  <mwc-icon-button id="menu" icon="menu" slot="navigationIcon"></mwc-icon-button>
   <span slot="title">FedCM RP Demo</span>
-  <mwc-icon-button
+    <mwc-icon-button
           id="code"
           icon="code"
           slot="actionItems"
+          href="{{code_source}}"
   ></mwc-icon-button>
 </mwc-top-app-bar-fixed>
 <mwc-linear-progress id="progress"></mwc-linear-progress>
@@ -78,6 +79,8 @@
         render,
       } from "https://unpkg.com/lit-html@2.2.0/lit-html.js?module";
 
+      const isMultiIdpFlow = {{#if multi_idp}}true{{else}}false{{/if}};
+
       import { IdentityProvider } from "{{idp_origin}}/fedcm.js";
 
       let idp;
@@ -100,7 +103,17 @@
           const token = await idp.signIn({
             domainHint: "allowed-domain.example",
           });
-          const user = await _fetch("/verify", { token });
+
+          // Construct the payload for the verification request.
+          const payload = { token };
+
+          // Conditionally add the multi_idp flag if it's true.
+          if (isMultiIdpFlow) {
+            payload.multi_idp = true;
+          }
+          
+
+          const user = await _fetch("/verify", payload);
           render(
             html`
           <p>You are signed in!</p>

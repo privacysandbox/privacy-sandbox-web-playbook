@@ -28,6 +28,7 @@ const auth = require("./libs/auth");
 const { sessionCheck } = require("./libs/common");
 const app = express();
 const isDevelopmentEnvironment = process.env.DEV_ENV;
+const CODE_SOURCE = process.env.CODE_SOURCE;
 
 app.set("view engine", "html");
 
@@ -112,7 +113,7 @@ app.get("/", (req, res) => {
   }
   // If user is not signed in, show `index.html` with id/password form.
   const ot_token = process.env.OT_TOKEN;
-  res.render("index.html", { ot_token });
+  res.render("index.html", { ot_token, code_source: CODE_SOURCE });
 });
 
 app.get("/authorization", (req, res) => {
@@ -126,7 +127,7 @@ app.get("/authorization", (req, res) => {
     return res.redirect(307, "/");
   }
   const ot_token = process.env.OT_TOKEN;
-  res.render("authorization.html", { ot_token });
+  res.render("authorization.html", { ot_token, code_source: CODE_SOURCE  });
 });
 
 app.get("/iframe", (req, res) => {
@@ -136,7 +137,8 @@ app.get("/iframe", (req, res) => {
     rp_origin: process.env.RP_URL,
     idp_1_origin: process.env.IDP1_URL,
     idp_2_origin: process.env.IDP2_URL,
-    user_info: user
+    user_info: user,
+    code_source: CODE_SOURCE 
    });
 });
 
@@ -186,6 +188,7 @@ app.get("/home", sessionCheck, (req, res) => {
     ],
     status: user?.status || "signed_in",
     demo_account: user.username === "demo@example.com",
+    code_source: CODE_SOURCE
   });
 });
 
@@ -235,6 +238,7 @@ app.get("/reauth", (req, res) => {
       },
     ],
     status: req.body.status || "signed_in",
+    code_source: CODE_SOURCE
   });
 });
 
@@ -242,6 +246,8 @@ app.get("/.well-known/web-identity", (req, res) => {
   console.log("/.well-known/web-identity");
   return res.json({
     provider_urls: [`${process.env.IDP1_URL}/fedcm.json`],
+    accounts_endpoint: "/auth/accounts",
+    login_url: "/",
   });
 });
 

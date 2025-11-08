@@ -48,6 +48,8 @@ app.use(
 const IDP_ORIGIN = process.env.IDP1_URL;
 const IDP2_ORIGIN = process.env.IDP2_URL;
 const CLIENT_ID = process.env.RP_URL;
+const CODE_SOURCE = process.env.CODE_SOURCE;
+
 
 app.use((req, res, next) => {
   if (process.env.PROJECT_DOMAIN) {
@@ -69,7 +71,6 @@ app.use((req, res, next) => {
 
 app.post("/verify", csrfCheck, (req, res) => {
   const { token: raw_token, multi_idp } = req.body;
-
   try {
     const nonce = req.session.nonce.toString();
 
@@ -110,6 +111,7 @@ app.get("/home", sessionCheck, (req, res) => {
     username: user.username,
     name: user.name,
     picture: user.picture,
+    code_source: CODE_SOURCE,
   });
 });
 
@@ -122,7 +124,8 @@ app.get("/", (req, res) => {
   res.render("index.html", 
     { nonce,
       client_id,
-      idp_origin
+      idp_origin,
+      code_source: CODE_SOURCE,
     });
 });
 
@@ -138,6 +141,7 @@ app.get("/multi-idp", (req, res) => {
     idp_origin,
     idp2_origin,
     multi_idp: true,
+    code_source: CODE_SOURCE,
   });
 });
 
@@ -150,7 +154,8 @@ app.get("/alternative-fields", (req, res) => {
     // TODO: wrap the IdP origin to config file
     nonce,
     client_id,
-    idp_origin
+    idp_origin,
+    code_source: CODE_SOURCE
   });
 });
 
@@ -160,7 +165,7 @@ app.get("/active-mode", (req, res) => {
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("active-mode.html", { nonce, client_id, idp_origin });
+  res.render("active-mode.html", { nonce, client_id, idp_origin, code_source: CODE_SOURCE, });
 });
 
 app.get("/authorization", (req, res) => {
@@ -169,7 +174,7 @@ app.get("/authorization", (req, res) => {
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("authorization.html", { nonce, client_id, idp_origin });
+  res.render("authorization.html", { nonce, client_id, idp_origin,  code_source: CODE_SOURCE});
 });
 
 app.get("/domain-hint", (req, res) => {
@@ -177,7 +182,7 @@ app.get("/domain-hint", (req, res) => {
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("domain-hint.html", { nonce, client_id, idp_origin });
+  res.render("domain-hint.html", { nonce, client_id, idp_origin, code_source: CODE_SOURCE,});
 });
 
 app.get("/domain-hint-passive", (req, res) => {
@@ -193,6 +198,7 @@ app.get("/domain-hint-passive", (req, res) => {
     idp_origin,
     idp2_origin,
     multi_idp: true,
+    code_source: CODE_SOURCE,
   });
 });
 
@@ -216,7 +222,15 @@ app.get("/button", (req, res) => {
   req.session.nonce = nonce;
   const client_id = CLIENT_ID;
   const idp_origin = IDP_ORIGIN;
-  res.render("button.html", { nonce, client_id, idp_origin });
+  res.render("button.html", { nonce, client_id, idp_origin,  code_source: CODE_SOURCE,});
+});
+
+app.get("/menu", (req, res) => {
+  res.render("menu", {
+    idp_origin: process.env.IDP1_URL,
+    idp2_origin: process.env.IDP2_URL,
+    code_source: process.env.CODE_SOURCE,
+  });
 });
 
 const port = 8080;

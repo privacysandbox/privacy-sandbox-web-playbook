@@ -24,3 +24,5 @@ import '@material/mwc-linear-progress';
 import '@material/mwc-textfield';
 import '@material/mwc-snackbar';
 import '@material/mwc-icon-button';
+import '@material/mwc-list/mwc-list.js';
+import '@material/mwc-list/mwc-list-item.js';

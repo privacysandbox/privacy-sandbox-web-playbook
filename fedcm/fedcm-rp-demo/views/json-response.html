@@ -42,7 +42,6 @@
   <script src="components-bundle.js" type="module"></script>
   <meta name="nonce" content="{{nonce}}" />
   <meta name="fedcm_demo_client_id" content="{{client_id}}" />
-  <meta name="fedcm_demo_idp_origin" content="{{idp_origin}}" />
 </head>
 <body class="mdc-typography">
 <mwc-top-app-bar-fixed>
@@ -52,13 +51,12 @@
           id="code"
           icon="code"
           slot="actionItems"
+          href="{{code_source}}"
   ></mwc-icon-button>
 </mwc-top-app-bar-fixed>
 <mwc-linear-progress id="progress"></mwc-linear-progress>
 <main class="content">
-  <h2 class="center">
-    Welcome to FedCM RP Demo: Active mode with Continuation bundle!
-  </h2>
+  <h2 class="center">Welcome to the FedCM RP Demo: JSON response in ID assertion</h2>
   <p id="unsupported" class="warning hidden">
     Your browser does not support FedCM.
   </p>
@@ -68,9 +66,7 @@
       If you don't see a sign-in dialog on top right corner, you need to
       sign-in on the IdP first by pressing the button below.
     </p>
-    <mwc-button id="sign-in" icon="login" raised
-    >Sign in with IdP</mwc-button
-    >
+    <mwc-button id="idp">Goto the IdP and Sign in</mwc-button>
     <p class="instructions">
       Use account ID of "<code>multiple-accounts</code>" to try mulitple
       accounts dialog.
@@ -87,31 +83,47 @@
       import { IdentityProvider } from "{{idp_origin}}/fedcm.js";
 
       const idp = new IdentityProvider({
-        configURL: "{{idp_origin}}/fedcm.json",
+        configURL: "{{idp_origin}}/fedcm-json-response.json",
         clientId: "{{client_id}}",
       });
 
       const signIn = async () => {
         try {
-          const token = await idp.signIn({
-            mode: "active",
-            params: { scope: "drive" },
-            mediation: "optional",
-          });
-          console.log("DEBUG on RP page:", token)
-          const user = await _fetch("/verify", { token });
+          
+          const token = await idp.signIn();
+
+          // Construct the payload for the verification request.
+          const payload = { token };
+          const user = await _fetch("/verify", payload);
           render(
             html`
-              <p>You are signed in!</p>
-              <img src="${user.picture}" class="picture" />
-              <p>${user.name} (${user.username})</p>
-              <mwc-button @click="${signout(user.user_id)}" raised
-                >Sign-out</mwc-button
-              >
-              <mwc-button @click="${disconnectFromIdP(user.user_id)}"
-                >Disconnect</mwc-button
-              >
-            `,
+          <p>You are signed in!</p>
+          <img src="${user.picture}" class="picture">
+          <p>${user.name} (${user.username})</p>
+          <p>ID Assertion Endpoint response:</p>
+          <pre class="code-block"><code>${JSON.stringify(payload, null, 2)}</code></pre>
+          <mwc-button @click="${signout(
+            user.user_id
+          )}" raised>Sign-out</mwc-button>
+          <mwc-button @click="${disconnectFromIdP(
+            user.user_id
+          )}">Disconnect</mwc-button>
+          <p class="instructions">
+          Press <strong>sign-out</strong> to sign out on this RP. This will call <code>navigator.credentials.preventSilentAccess()</code>, and prevent auto-reauthentication with this account when the user visits the RP again. Next time the user visits the RP, they'll be treated as a returning user with this account. Learn more in the
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-auto-reauthn#prevent-silent-access" target="_blank">developer guide</a>.
+          </p>
+          <p class="instructions">
+          Press <strong>disconnect</strong> to disconnect from the IdP. The Disconnect API allows the user to disconnect the IdP account
+          from the RP on the browser as well as on the IdP server. Next time the user visits the RP they'll be treated as a new user, and
+          the <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-126-updates#fields-api" target="_blank">disclosure
+          UI</a> will be shown. Learn more about the Disconnect API
+          <a href="https://developers.google.com/privacy-sandbox/blog/fedcm-chrome-122-updates#disconnect_api"
+          target="_blank">here</a>.
+          </p>
+          <p class="instructions">
+          Both of the methods <code>signOut()</code> and <code>disconnect()<code> are defined in the IdP's <a href="https://fedcm-idp-demo.glitch.me/fedcm.js" target="_blank">config file</a>. The methods can also be implemented by the RP.
+          </p>
+          `,
             $("#profile")
           );
           $("#login").classList.add("hidden");
@@ -148,18 +160,16 @@
         }
       };
 
-      $("#sign-in").addEventListener("click", async (e) => {
-        try {
-          if ("IdentityCredential" in window) {
-            await signIn();
-          } else {
-            throw new Error("FedCM not supported.");
-          }
-        } catch (error) {
-          idp.redirect();
-        }
+      $("#idp").addEventListener("click", (e) => {
+        idp.redirect();
       });
+
+      if ("IdentityCredential" in window) {
+        await signIn();
+      } else {
+        $("#unsupported").classList.remove("hidden");
+      }
     </script>
-<mwc-snackbar id="snackbar"></mwc-snackbar>
-</body>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+  </body>
 </html>

@@ -10,7 +10,7 @@
     "fastify": "^4.21.0",
     "handlebars": "^4.7.8",
     "@fastify/view": "^8.0.0",
-    "@fastify/static": "^6.10.2",
+    "@fastify/static": "^9.0.0",
     "got": "^14.2.0",
     "url": "^0.11.3",
     "fs": "^0.0.2"

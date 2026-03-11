@@ -33,7 +33,7 @@
     "lowdb-session-store": "^1.1.1",
     "sass": "^1.27.2",
     "sass-loader": "^10.0.4",
-    "webpack": "^4.44.1",
+    "webpack": "^5.105.4",
     "webpack-cli": "^3.3.12",
     "@material/mwc-icon-button": "^0.25.3",
     "@material/mwc-icon": "^0.25.3"

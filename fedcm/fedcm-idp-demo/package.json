@@ -15,7 +15,7 @@
     "@material/mwc-snackbar": "^0.25.3",
     "@material/mwc-textfield": "^0.25.3",
     "@material/mwc-top-app-bar-fixed": "^0.25.3",
-    "@simplewebauthn/server": "^4.1.0",
+    "@simplewebauthn/server": "^13.3.0",
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "base64url": "^3.0.1",
